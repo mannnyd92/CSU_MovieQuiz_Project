@@ -114,6 +114,17 @@ public class ClientConsole implements ChatIF
     	  String portstring = args[1];
     	  port = Integer.parseInt(portstring);
       }
+      if(args.length == 1){
+    	  try{
+    		  String onlyport = args[0];
+    		  port = Integer.parseInt(onlyport);
+    		  host = "localhost";
+    	  }
+    	  catch(NumberFormatException nfe){
+    		  host = args[0];
+    		  port = DEFAULT_PORT;
+    	  }
+      }
     }
     catch(ArrayIndexOutOfBoundsException e)
     {

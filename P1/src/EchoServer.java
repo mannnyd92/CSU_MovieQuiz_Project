@@ -3,6 +3,7 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+
 import ocsf.server.*;
 
 /**
@@ -70,6 +71,26 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server has stopped listening for connections.");
+  }
+  
+  protected void clientConnected(ConnectionToClient client) {
+	  String id = "id";
+	  String info = client.toString();
+	  client.setInfo(id, info);
+	  System.out.println(client + " has connected.");
+  }
+  
+  synchronized protected void clientDisconnected(ConnectionToClient client) {
+	  System.out.println(client + " has been disconnected.");
+  }
+  
+  synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
+	  String id = "id";
+	  System.out.println(client.getInfo(id) + " has disconnected due to: " + exception);
+  }
+  
+  protected void listeningException(Throwable exception) {
+	  System.out.println(exception);
   }
   
   //Class methods ***************************************************
