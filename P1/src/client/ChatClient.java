@@ -119,7 +119,6 @@ public class ChatClient extends AbstractClient
   
   protected void connectionClosed() {
 	  System.out.println("You have been disconnected.");
-	  
   }
   
   protected void connectionException(Exception exception){
