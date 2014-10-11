@@ -69,6 +69,16 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
+	  if(message.charAt(0) == '#'){
+		String tmpmes = message.substring(1,message.length());
+		System.out.println(tmpmes);
+		  
+		  
+		  
+		  
+	  }
+	  
+	  else{
     try
     {
       sendToServer(message);
@@ -80,7 +90,7 @@ public class ChatClient extends AbstractClient
       quit();
     }
   }
-  
+  }
   /**
    * This method terminates the client.
    */
