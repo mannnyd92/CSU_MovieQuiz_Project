@@ -106,12 +106,14 @@ public class ChatClient extends AbstractClient
   }
   
   protected void connectionClosed() {
-	  System.out.println("Server has shut down.");
-	  quit();
+	  System.out.println("You have been disconnected.");
+	  
   }
   
   protected void connectionException(Exception exception){
-	  connectionClosed();
+	  System.out.println("Server has shut down.");
+	  quit();
+	  
   }
   
 }
