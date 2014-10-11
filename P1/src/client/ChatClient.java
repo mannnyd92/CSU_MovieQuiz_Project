@@ -71,7 +71,19 @@ public class ChatClient extends AbstractClient
   {
 	  if(message.charAt(0) == '#'){
 		String tmpmes = message.substring(1,message.length());
-		
+		switch (tmpmes){
+			case "quit":	quit();
+							break;
+			case "logoff":	try {closeConnection();}catch(Exception e){}
+							break;
+			case "sethost": 
+			case "setport":
+			case "login":
+			case "gethost":
+			case "getport":
+			
+		}
+			
 		System.out.println(tmpmes);
 		  
 		  
