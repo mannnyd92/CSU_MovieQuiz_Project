@@ -71,6 +71,7 @@ public class ChatClient extends AbstractClient
   {
 	  if(message.charAt(0) == '#'){
 		String tmpmes = message.substring(1,message.length());
+		
 		System.out.println(tmpmes);
 		  
 		  
