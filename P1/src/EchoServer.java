@@ -24,7 +24,7 @@ public class EchoServer extends AbstractServer
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
-  
+  boolean initial = true;
   
   //Constructors ****************************************************
   
@@ -36,7 +36,7 @@ public class EchoServer extends AbstractServer
   public EchoServer(int port) 
   {
     super(port);
-
+    ServerConsole sc = new ServerConsole(this);
   }
 
   
@@ -51,6 +51,28 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
+	if(initial == true){
+		String login = msg.toString();
+		String log = "#login";
+		if(!login.substring(0, 6).equals(log)){
+			try {
+				String error = "Login was not received.";
+				client.sendToClient(error);
+				client.close();
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			String name = login.substring(8, login.length() - 1);
+			String id = "id";
+			client.setInfo(id, name);
+		}
+		
+		initial = false;
+	}
+	String id = "id";
     System.out.println("Message received: " + msg + " from " + client);
     this.sendToAllClients(msg);
   }
@@ -63,7 +85,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
-      ServerConsole sc = new ServerConsole(this);
+
   }
   
   /**
