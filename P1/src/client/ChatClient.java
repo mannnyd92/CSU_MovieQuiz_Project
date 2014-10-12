@@ -69,26 +69,76 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
+	  //need to deal with the case of no space after command
 	  if(message.charAt(0) == '#'){
 		String tmpmes = message.substring(1,message.length());
+		String param = "";
+		String chkmes = "";
+		boolean flag = false;
+		if(tmpmes.length() > 6){
+			
+			chkmes = tmpmes.substring(0,7);
+				
+			if(chkmes.equals("sethost")){
+				if( tmpmes.length() > 8){
+					param = tmpmes.substring(8, tmpmes.length());
+					tmpmes = "sethost";
+					flag = true;
+				}else{System.out.println("Please give parameter after command");}
+			}
+			
+			if(chkmes.equals("setport")){
+				if( tmpmes.length() > 8){
+					param = tmpmes.substring(8, tmpmes.length());
+					tmpmes = "setport";
+					flag = true;
+				}else{System.out.println("Please give parameter after command");}
+			}
+		}
+		
 		switch (tmpmes){
 			case "quit":	quit();
 							break;
+							
 			case "logoff":	try {closeConnection();}catch(Exception e){}
 							break;
-			case "sethost": 
-			case "setport":
-			case "login":
-			case "gethost":
-			case "getport":
+							
+			case "sethost":	if(!isConnected() && flag){
+								setHost(param);
+								flag = false;
+							}else if (isConnected() && flag){
+								System.out.println("Already Logged in, You must logoff to sethost");
+							}
+							break;
+							
+			case "setport":	if(!isConnected() && flag){
+								try{
+									int port = Integer.valueOf(param);
+									setPort(port);
+									flag = false;
+								}catch(Exception e){}
+							}else if(isConnected() && flag){
+								System.out.println("Already Logged in, You must logoff to setport");}
+							break;	
+							
+			case "login":	if(isConnected()){
+								System.out.println("Already logged in");
+							}else{
+								try{
+									openConnection();
+								}catch(Exception e){}
+							}break;
+			
+			case "gethost":	System.out.println(getHost());
+							break;
+							
+			case "getport":	System.out.println(getPort());
+							break;
+							
+			default:		System.out.println("# Requires to be followed by a command and a parameter");
 			
 		}
-			
-		System.out.println(tmpmes);
-		  
-		  
-		  
-		  
+			  
 	  }
 	  
 	  else{
@@ -119,6 +169,7 @@ public class ChatClient extends AbstractClient
   
   protected void connectionClosed() {
 	  System.out.println("You have been disconnected.");
+	  setHost(null);
   }
   
   protected void connectionException(Exception exception){
