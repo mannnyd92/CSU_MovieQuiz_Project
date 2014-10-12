@@ -25,6 +25,7 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   
+  
   //Constructors ****************************************************
   
   /**
@@ -35,6 +36,7 @@ public class EchoServer extends AbstractServer
   public EchoServer(int port) 
   {
     super(port);
+
   }
 
   
@@ -61,6 +63,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
+      ServerConsole sc = new ServerConsole(this);
   }
   
   /**
