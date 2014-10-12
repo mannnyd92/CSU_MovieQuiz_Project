@@ -42,6 +42,7 @@ public class ServerConsole implements ChatIF{
 	  }
 	
 	public void handleMessageFromServerUI(String message){
+		
 		if(message.charAt(0) == '#'){
 			String tmpmes = message.substring(1,message.length());
 			String param = "";
@@ -51,25 +52,27 @@ public class ServerConsole implements ChatIF{
 				chkmes = tmpmes.substring(0,7);
 				if(tmpmes.length() > 6){
 							
-							chkmes = tmpmes.substring(0,7);
-								
-							
-							if(chkmes.equals("setport")){
-								if( tmpmes.length() > 8){
-									if(tmpmes.charAt(7) != ' '){
-										System.out.println("A space is required after the command!");
-									}
-									else{
-									param = tmpmes.substring(8, tmpmes.length());
-									tmpmes = "setport";
-									flag = true;
-									}
-								}else{System.out.println("Please give parameter after command!");}
-							}
-						}
+					chkmes = tmpmes.substring(0,7);
 						
+					
+					if(chkmes.equals("setport")){
+						if( tmpmes.length() > 8){
+							if(tmpmes.charAt(7) != ' '){
+								System.out.println("A space is required after the command!");
+							}
+							else{
+							param = tmpmes.substring(8, tmpmes.length());
+							tmpmes = "setport";
+							flag = true;
+							}
+						}else{System.out.println("Please give parameter after command!");}
+					}
+				
+				}}		
 						switch (tmpmes){
-							case "quit":	try{server.close();}catch(Exception e){}
+							case "quit":	try{server.close();
+											System.exit(0);
+											}catch(Exception e){}
 											break;
 					
 											
@@ -79,7 +82,7 @@ public class ServerConsole implements ChatIF{
 													server.setPort(port);
 													flag = false;
 												}catch(Exception e){}
-											}else if(server.isListening() && flag){
+											}else if(server.isListening() && flag == true){
 												System.out.println("Server already up! Stop server to change port");}
 											break;	
 											
@@ -97,21 +100,25 @@ public class ServerConsole implements ChatIF{
 												System.out.println("Server already up!");
 											}
 											break;
-							default:		System.out.println("# Requires that it is followed by a command and a parameter!");
+											
+							case "close":	try{server.close();
+											
+											}catch(Exception e){}
+											break;
+											
+							default:		System.out.println("# Requires that it is followed by a valid command and a parameter!");
 							
 						}
 							  
 					  }
 		
 					  else{
-		
-		
-		
-						
-		String serverMessage = "SERVER MSG> " + message;
-		server.sendToAllClients(serverMessage);
-		display(message);
-			}}}
+							
+							String serverMessage = "SERVER MSG> " + message;
+							server.sendToAllClients(serverMessage);
+							display(message);
+					}
+		}
 	  
 	@Override
 	public void display(String message) {

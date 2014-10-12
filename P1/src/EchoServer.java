@@ -36,7 +36,7 @@ public class EchoServer extends AbstractServer
   public EchoServer(int port) 
   {
     super(port);
-
+    ServerConsole sc = new ServerConsole(this);
   }
 
   
@@ -63,7 +63,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
-      ServerConsole sc = new ServerConsole(this);
+     
   }
   
   /**
