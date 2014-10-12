@@ -24,7 +24,6 @@ public class EchoServer extends AbstractServer
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
-  boolean initial = true;
   
   //Constructors ****************************************************
   
@@ -51,30 +50,52 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-	if(initial == true){
-		String login = msg.toString();
-		String log = "#login";
-		if(!login.substring(0, 6).equals(log)){
+	String login = msg.toString();
+	String log = "#login";
+	String connected = "connected";
+	boolean logbool = false;
+	try{
+		if(login.substring(0, 6).equals(log)){
+			logbool = true;
+		}
+	}catch(Exception e){
+		
+	}
+	if(logbool == true){
+		if(client.getInfo(connected) == null){
+
+			if(!login.substring(0, 6).equals(log)){
+				try {
+					String error = "Login was not received.";
+					client.sendToClient(error);
+					client.close();
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			else{
+				String name = login.substring(8, login.length() - 1);
+				String id = "id";
+				client.setInfo(id, name);
+			}
+			
+			client.setInfo(connected, true);
+		}
+		else{
+			String error = "The #login command is invalid after logging in.";
 			try {
-				String error = "Login was not received.";
 				client.sendToClient(error);
-				client.close();
-				return;
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		else{
-			String name = login.substring(8, login.length() - 1);
-			String id = "id";
-			client.setInfo(id, name);
-		}
-		
-		initial = false;
 	}
 	String id = "id";
     System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String message = "<" + client.getInfo(id).toString() + "> " + msg;
+    this.sendToAllClients(message);
   }
     
   /**
@@ -85,7 +106,6 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
-
   }
   
   /**

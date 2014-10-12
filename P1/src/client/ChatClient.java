@@ -140,6 +140,8 @@ public class ChatClient extends AbstractClient
 							}else{
 								try{
 									openConnection();
+								    String loginMsg = "#login <" + loginID + ">";
+								    this.sendToServer(loginMsg);
 								}catch(Exception e){}
 							}break;
 			
