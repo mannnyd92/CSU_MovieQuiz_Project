@@ -69,7 +69,7 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-	  //need to deal with the case of no space after command
+	 
 	  if(message.charAt(0) == '#'){
 		String tmpmes = message.substring(1,message.length());
 		String param = "";
@@ -80,19 +80,29 @@ public class ChatClient extends AbstractClient
 			chkmes = tmpmes.substring(0,7);
 				
 			if(chkmes.equals("sethost")){
-				if( tmpmes.length() > 8){
-					param = tmpmes.substring(8, tmpmes.length());
-					tmpmes = "sethost";
-					flag = true;
-				}else{System.out.println("Please give parameter after command");}
+				if( tmpmes.length() > 7){
+					if(tmpmes.charAt(7) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+						param = tmpmes.substring(8, tmpmes.length());
+						tmpmes = "sethost";
+						flag = true;
+					}
+				}else{System.out.println("Please give parameter after command!");}
 			}
 			
 			if(chkmes.equals("setport")){
 				if( tmpmes.length() > 8){
+					if(tmpmes.charAt(7) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
 					param = tmpmes.substring(8, tmpmes.length());
 					tmpmes = "setport";
 					flag = true;
-				}else{System.out.println("Please give parameter after command");}
+					}
+				}else{System.out.println("Please give parameter after command!");}
 			}
 		}
 		
@@ -107,7 +117,7 @@ public class ChatClient extends AbstractClient
 								setHost(param);
 								flag = false;
 							}else if (isConnected() && flag){
-								System.out.println("Already Logged in, You must logoff to sethost");
+								System.out.println("Already Logged in, You must logoff to sethost!");
 							}
 							break;
 							
@@ -118,11 +128,11 @@ public class ChatClient extends AbstractClient
 									flag = false;
 								}catch(Exception e){}
 							}else if(isConnected() && flag){
-								System.out.println("Already Logged in, You must logoff to setport");}
+								System.out.println("Already Logged in!, You must logoff to setport");}
 							break;	
 							
 			case "login":	if(isConnected()){
-								System.out.println("Already logged in");
+								System.out.println("Already logged in!");
 							}else{
 								try{
 									openConnection();
@@ -134,8 +144,8 @@ public class ChatClient extends AbstractClient
 							
 			case "getport":	System.out.println(getPort());
 							break;
-							
-			default:		System.out.println("# Requires to be followed by a command and a parameter");
+						
+			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
 		}
 			  
@@ -169,7 +179,6 @@ public class ChatClient extends AbstractClient
   
   protected void connectionClosed() {
 	  System.out.println("You have been disconnected.");
-	  setHost(null);
   }
   
   protected void connectionException(Exception exception){
