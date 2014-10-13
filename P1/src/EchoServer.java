@@ -3,6 +3,7 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.util.ArrayList;
 
 import ocsf.server.*;
 
@@ -93,12 +94,49 @@ public class EchoServer extends AbstractServer
 			}
 		}
 	}
+	
+	
 	String id = "id";
   System.out.println("Message received: " + msg + " from " + client);
   String message = "<" + client.getInfo(id).toString() + "> " + msg;
   this.sendToAllClients(message);
 }
     
+  
+  /**Method that returns an ArrayList containing names of all the
+   * other users who are blocking the current client.
+   * @param client who wants to know which users are blocking it
+   * @return arraylist containing all users who are blocking the client
+   */
+  protected ArrayList whoBlocksMeList(ConnectionToClient client){
+	Thread[] clients = getClientConnections();
+	ArrayList blocklist = new ArrayList();
+	String block = "blocklist";
+	String id = "id";
+	ConnectionToClient cl;
+	for(int i = 0; i < clients.length; i++){
+		cl = (ConnectionToClient)clients[i];
+		ArrayList holder = (ArrayList) cl.getInfo(block);
+		if(holder.contains(client.getInfo(id).toString())){
+			blocklist.add(cl.getInfo(id).toString());
+		}
+	}
+	return blocklist;
+  }
+  
+  /**Method that returns an arraylist containing the users
+   * who are blocked from the current client
+   * @param client that is blocking the other users
+   * @return arraylist containing the blocked users
+   */
+  protected ArrayList whoIBlockList(ConnectionToClient client){
+	  ArrayList blocklist = new ArrayList();
+	  String block = "blocklist";
+	  blocklist = (ArrayList) client.getInfo(block);
+	  return blocklist;
+  }
+  
+  
   /**
    * This method overrides the one in the superclass.  Called
    * when the server starts listening for connections.
