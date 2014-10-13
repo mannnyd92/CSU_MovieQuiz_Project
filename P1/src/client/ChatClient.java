@@ -82,7 +82,18 @@ public class ChatClient extends AbstractClient
 		if(tmpmes.length() > 6){
 			
 			chkmes = tmpmes.substring(0,7);
-				
+			//new code untested
+			if(chkmes.equals("block")){
+				if( tmpmes.length() > 5){
+					if(tmpmes.charAt(5) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+						param = tmpmes.substring(6, tmpmes.length());
+						tmpmes = "block";
+					}
+				}	
+			}	
 			if(chkmes.equals("sethost")){
 				if( tmpmes.length() > 7){
 					if(tmpmes.charAt(7) != ' '){
