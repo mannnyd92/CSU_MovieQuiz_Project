@@ -75,52 +75,60 @@ public class ChatClient extends AbstractClient
   {
 	 
 	  if(message.charAt(0) == '#'){
-		String tmpmes = message.substring(1,message.length());
+		String tmpmes = "";
+		String tmpmes1 = message.substring(1,message.length());
+		String tmpmes2 = message.substring(1,message.length());
 		String param = "";
-		String chkmes = "";
+		String chkmes1 = "";
+		String chkmes2 = "";
 		boolean flag = false;
-		if(tmpmes.length() > 6){
+		if(tmpmes1.length() > 6){
 			
-			chkmes = tmpmes.substring(0,7);
+			chkmes1 = tmpmes1.substring(0,5);
+			
 			//new code untested
-			if(chkmes.equals("block")){
-				if( tmpmes.length() > 5){
-					if(tmpmes.charAt(5) != ' '){
+			if(chkmes1.equals("block")){
+				if( tmpmes1.length() > 5){
+					if(tmpmes1.charAt(5) != ' '){
 						System.out.println("A space is required after the command!");
 					}
 					else{
-						param = tmpmes.substring(6, tmpmes.length());
-						tmpmes = "block";
+						param = tmpmes1.substring(6, tmpmes1.length());
+						tmpmes1 = "block";
+						tmpmes = tmpmes1;
 					}
 				}	
-			}	
-			if(chkmes.equals("sethost")){
-				if( tmpmes.length() > 7){
-					if(tmpmes.charAt(7) != ' '){
+			}
+			chkmes2 = tmpmes2.substring(0,7);
+			if(chkmes2.equals("sethost")){
+				if( tmpmes2.length() > 7){
+					if(tmpmes2.charAt(7) != ' '){
 						System.out.println("A space is required after the command!");
 					}
 					else{
-						param = tmpmes.substring(8, tmpmes.length());
-						tmpmes = "sethost";
+						param = tmpmes2.substring(8, tmpmes2.length());
+						tmpmes2 = "sethost";
+						tmpmes = tmpmes2;
 						flag = true;
 					}
 				}else{System.out.println("Please give parameter after command!");}
 			}
 			
-			if(chkmes.equals("setport")){
-				if( tmpmes.length() > 8){
-					if(tmpmes.charAt(7) != ' '){
+			if(chkmes2.equals("setport")){
+				if( tmpmes2.length() > 8){
+					if(tmpmes2.charAt(7) != ' '){
 						System.out.println("A space is required after the command!");
 					}
 					else{
-					param = tmpmes.substring(8, tmpmes.length());
-					tmpmes = "setport";
+					param = tmpmes2.substring(8, tmpmes2.length());
+					tmpmes2 = "setport";
+					tmpmes = tmpmes2;
 					flag = true;
 					}
 				}else{System.out.println("Please give parameter after command!");}
 			}
 		}
-		
+				
 		switch (tmpmes){
 			case "quit":	quit();
 							break;
@@ -143,7 +151,7 @@ public class ChatClient extends AbstractClient
 									flag = false;
 								}catch(Exception e){}
 							}else if(isConnected() && flag){
-								System.out.println("Already Logged in!, You must logoff to setport");}
+								System.out.println("Already Logged in!, You must logoff to setport!");}
 							break;	
 							
 			case "login":	if(isConnected()){
@@ -151,8 +159,6 @@ public class ChatClient extends AbstractClient
 							}else{
 								try{
 									openConnection();
-								    String loginMsg = "#login <" + loginID + ">";
-								    this.sendToServer(loginMsg);
 								}catch(Exception e){}
 							}break;
 			
@@ -162,6 +168,9 @@ public class ChatClient extends AbstractClient
 			case "getport":	System.out.println(getPort());
 							break;
 						
+			case "block":	System.out.println(param);
+							break;
+							
 			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
 		}
