@@ -82,18 +82,7 @@ public class ChatClient extends AbstractClient
 		if(tmpmes.length() > 6){
 			
 			chkmes = tmpmes.substring(0,7);
-			//new code untested
-			if(chkmes.equals("block")){
-				if( tmpmes.length() > 5){
-					if(tmpmes.charAt(5) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-						param = tmpmes.substring(6, tmpmes.length());
-						tmpmes = "block";
-					}
-				}	
-			}	
+			
 			if(chkmes.equals("sethost")){
 				if( tmpmes.length() > 7){
 					if(tmpmes.charAt(7) != ' '){
@@ -161,6 +150,18 @@ public class ChatClient extends AbstractClient
 							
 			case "getport":	System.out.println(getPort());
 							break;
+							
+			case "block":	send(message);
+							break;
+			
+			case "unblock": send(message);
+							break;
+			
+			case "whoiblock":	send(message);
+								break;
+			
+			case "whoblocksme":	send(message);
+								break;
 						
 			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
@@ -169,21 +170,27 @@ public class ChatClient extends AbstractClient
 	  }
 	  
 	  else{
-    try
-    {
-      sendToServer(message);
-    }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
-    }
-  }
+		  send(message);
+   
+	  }
   }
   /**
    * This method terminates the client.
    */
+  
+  public void send(String message){
+	  try
+	    {
+	    
+	      sendToServer(message);
+	    }
+	    catch(IOException e)
+	    {
+	      clientUI.display
+	        ("Could not send message to server.  Terminating client.");
+	      quit();
+	    }
+  }
   public void quit()
   {
     try
