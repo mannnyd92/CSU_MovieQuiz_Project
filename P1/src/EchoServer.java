@@ -25,6 +25,7 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   
+  
   //Constructors ****************************************************
   
   /**
@@ -48,8 +49,8 @@ public class EchoServer extends AbstractServer
    * @param client The connection from which the message originated.
    */
   public void handleMessageFromClient
-    (Object msg, ConnectionToClient client)
-  {
+  (Object msg, ConnectionToClient client)
+{
 	String login = msg.toString();
 	String log = "#login";
 	String connected = "connected";
@@ -93,10 +94,10 @@ public class EchoServer extends AbstractServer
 		}
 	}
 	String id = "id";
-    System.out.println("Message received: " + msg + " from " + client);
-    String message = "<" + client.getInfo(id).toString() + "> " + msg;
-    this.sendToAllClients(message);
-  }
+  System.out.println("Message received: " + msg + " from " + client);
+  String message = "<" + client.getInfo(id).toString() + "> " + msg;
+  this.sendToAllClients(message);
+}
     
   /**
    * This method overrides the one in the superclass.  Called
@@ -106,7 +107,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
-
+     
   }
   
   /**
