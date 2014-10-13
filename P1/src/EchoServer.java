@@ -26,6 +26,7 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   
+  ArrayList<String> validUsers = new ArrayList<String>();
   
   //Constructors ****************************************************
   
@@ -108,15 +109,15 @@ public class EchoServer extends AbstractServer
    * @param client who wants to know which users are blocking it
    * @return arraylist containing all users who are blocking the client
    */
-  protected ArrayList whoBlocksMeList(ConnectionToClient client){
+  protected ArrayList<String> whoBlocksMeList(ConnectionToClient client){
 	Thread[] clients = getClientConnections();
-	ArrayList blocklist = new ArrayList();
+	ArrayList<String> blocklist = new ArrayList<String>();
 	String block = "blocklist";
 	String id = "id";
 	ConnectionToClient cl;
 	for(int i = 0; i < clients.length; i++){
 		cl = (ConnectionToClient)clients[i];
-		ArrayList holder = (ArrayList) cl.getInfo(block);
+		ArrayList<String> holder = (ArrayList<String>) cl.getInfo(block);
 		if(holder.contains(client.getInfo(id).toString())){
 			blocklist.add(cl.getInfo(id).toString());
 		}
@@ -129,10 +130,10 @@ public class EchoServer extends AbstractServer
    * @param client that is blocking the other users
    * @return arraylist containing the blocked users
    */
-  protected ArrayList whoIBlockList(ConnectionToClient client){
-	  ArrayList blocklist = new ArrayList();
+  protected ArrayList<String> whoIBlockList(ConnectionToClient client){
+	  ArrayList<String> blocklist = new ArrayList<String>();
 	  String block = "blocklist";
-	  blocklist = (ArrayList) client.getInfo(block);
+	  blocklist = (ArrayList<String>) client.getInfo(block);
 	  return blocklist;
   }
   
@@ -160,8 +161,11 @@ public class EchoServer extends AbstractServer
   
   protected void clientConnected(ConnectionToClient client) {
 	  String id = "id";
+	  String block = "blocklist";
+	  ArrayList<String> blocklist = new ArrayList<String>();
 	  String info = client.toString();
 	  client.setInfo(id, info);
+	  client.setInfo(block, blocklist);
 	  System.out.println(client + " has connected.");
   }
   
@@ -190,10 +194,17 @@ public class EchoServer extends AbstractServer
   public static void main(String[] args) 
   {
     int port = 0; //Port to listen on
-
+    String usernameFile;
+    try{
+    	usernameFile = args[0];
+    }
+    catch(Exception e){
+    	System.out.println("ERROR - A username file is required.");
+    	System.exit(0);
+    }
     try
     {
-      port = Integer.parseInt(args[0]); //Get port from command line
+      port = Integer.parseInt(args[1]); //Get port from command line
     }
     catch(Throwable t)
     {
