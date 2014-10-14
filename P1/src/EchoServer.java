@@ -90,7 +90,6 @@ public class EchoServer extends AbstractServer
 				try {
 					client.sendToClient(error);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -100,37 +99,90 @@ public class EchoServer extends AbstractServer
   
   public void block(Object msg, ConnectionToClient client){
 	  
-	  System.out.println(client.getInfo("id"));
 	  String[] temp = ((String)msg).split(" ");
-	  if(client.getInfo("id") == temp[1]){
-		  System.out.println("You cannot block the sending of messages to yourself.");
+	    
+	  if(whoIBlockList(client).contains(temp[1])){
+		  try {
+			client.sendToClient("Messages from "+temp[1]+" were already blocked.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  } else if(client.getInfo("id").equals(temp[1])){
+		  try {
+			client.sendToClient("You cannot block the sending of messages to yourself.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  } else if (!validUsers.contains(temp[1])){
+		  try {
+			client.sendToClient("User "+temp[1]+" does not exist.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  } else {
+		  if(addBlockedUser(client, temp[1])){
+			  try {
+				client.sendToClient("Messages from "+temp[1]+" will be blocked.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		  }
 	  }
 	  
+  }
+  
+  public void unblock(Object msg, ConnectionToClient client){
+	
+	  try{
+		  String[] temp = ((String)msg).split(" ");
+		  String unblock = temp[1];
+		  
+		  if(!whoIBlockList(client).contains(temp[1])){
+			  try {
+				client.sendToClient("Messages from "+temp[1]+" were not blocked.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		  }
+		  
+		  
+	  } catch(ArrayIndexOutOfBoundsException e){
+		  String block = "blocklist";
+		  ArrayList<String> temp = new ArrayList<String>();
+		  temp = (ArrayList<String>)client.getInfo(block);
+		  temp.clear();
+		  client.setInfo(block, temp);
+	  }
   }
   
   public void handleMessageFromClient
   (Object msg, ConnectionToClient client)
 {
 	  String[] temp = ((String)msg).split(" ");
-	  
 	  if(((String)msg).charAt(0) == '#'){
 		  switch (temp[0]){
-		  		case "#block":	block(msg, client);
-		  						break;
-		  		case "#unblock":
+		  		case "#block":		block(msg, client);
+		  							break;
+		  		case "#unblock":	unblock(msg,client);
+		  							break;
 		  		case "#whoblocksme":
 		  		case "#whoiblock":
 		  		case "#login":	login(msg,client);
+		  						logwrite(msg,client);
 		  						break;
 		  }
 		  
+	  }else{
+		  logwrite(msg,client);
 	  }
-		  String id = "id";
-		  System.out.println("Message received: " + msg + " from " + client);
-		  String message = "<" + client.getInfo(id).toString() + "> " + msg;
-		  this.sendToAllClients(message);
-	  
 }   
+  
+  public void logwrite(Object msg, ConnectionToClient client){
+	  String id = "id";
+	  System.out.println("Message received: " + msg + " from " + client);
+	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
+	  this.sendToAllClients(message);
+  }
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
@@ -172,6 +224,7 @@ public class EchoServer extends AbstractServer
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  temp.add(blockee);
 		  client.setInfo(block, temp);
+		  client.sendToClient(temp);
 		  return true;
 	  }
 	  catch(Exception e){
