@@ -6,7 +6,9 @@ package client;
 
 import ocsf.client.*;
 import common.*;
+
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -27,7 +29,7 @@ public class ChatClient extends AbstractClient
    */
   ChatIF clientUI; 
   String loginID;
-  
+  ArrayList<String> blockedList = new ArrayList<String>();
   
   //Constructors ****************************************************
   
@@ -63,6 +65,16 @@ public class ChatClient extends AbstractClient
 	if(isConnected() == false){
 		connectionClosed();
 	}
+	if(msg instanceof ArrayList){
+		blockedList = (ArrayList<String>)msg;
+		return;
+	}
+	String userparse = msg.toString();
+	userparse = userparse.substring(1, userparse.indexOf(">") - 1);
+	if(blockedList.contains(userparse)){
+		return;
+	}
+	
     clientUI.display(msg.toString());
   }
 
