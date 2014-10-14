@@ -114,7 +114,7 @@ public class ChatClient extends AbstractClient
 		String param = "";
 		String chkmes = "";
 		boolean flag = false;
-		if(tmpmes.length() > 5){
+		if(tmpmes.length() > 5 && tmpmes.length() != 6){
 						
 			chkmes = tmpmes.substring(0,7);
 			
