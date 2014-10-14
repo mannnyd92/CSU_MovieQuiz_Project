@@ -85,6 +85,18 @@ public class ChatClient extends AbstractClient
 	catch(Exception e){
 		
 	}
+
+	
+	String userparse = (String)msg;
+	try{
+	userparse = userparse.substring(1, userparse.indexOf(">"));
+	
+	}catch(Exception e){}
+	
+	
+	if(blockedList.contains(userparse)){
+		return;
+	}
 	
     clientUI.display(msg.toString());
   }
