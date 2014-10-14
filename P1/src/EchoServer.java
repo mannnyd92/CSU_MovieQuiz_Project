@@ -4,6 +4,7 @@
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import ocsf.server.*;
 
@@ -26,7 +27,7 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   
-  ArrayList<String> validUsers = new ArrayList<String>();
+  protected static ArrayList<String> validUsers = new ArrayList<String>();
   
   //Constructors ****************************************************
   
@@ -164,6 +165,34 @@ public class EchoServer extends AbstractServer
 	  return blocklist;
   }
   
+  protected boolean addBlockedUser(ConnectionToClient client, String blockee){
+	  try{
+	  	  String block = "blocklist";
+		  ArrayList<String> temp = new ArrayList<String>();
+		  temp = (ArrayList<String>)client.getInfo(block);
+		  temp.add(blockee);
+		  client.setInfo(block, temp);
+		  return true;
+	  }
+	  catch(Exception e){
+		  return false;
+	  }
+  }
+  
+  protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
+	  String block = "blocklist";
+	  try{
+		  ArrayList<String> temp = new ArrayList<String>();
+		  temp = (ArrayList<String>)client.getInfo(block);
+		  int index = temp.indexOf(unblockee);
+		  temp.remove(index);
+		  client.setInfo(block, temp);
+		  return true;
+	  }
+	  catch(Exception e){
+		  return false;
+	  }
+  }
   
   /**
    * This method overrides the one in the superclass.  Called
@@ -221,12 +250,16 @@ public class EchoServer extends AbstractServer
   public static void main(String[] args) 
   {
     int port = 0; //Port to listen on
-    String usernameFile;
     try{
-    	usernameFile = args[0];
+    	String usernameFile = args[0];
+    	Scanner s = new Scanner(new File(usernameFile));
+    	while(s.hasNext()){
+    		validUsers.add(s.next());
+    	}
+    	s.close();
     }
     catch(Exception e){
-    	System.out.println("ERROR - A username file is required.");
+    	System.out.println("ERROR - A valid username file is required.");
     	System.exit(0);
     }
     try
