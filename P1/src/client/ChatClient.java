@@ -65,7 +65,7 @@ public class ChatClient extends AbstractClient
 	if(isConnected() == false){
 		connectionClosed();
 	}
-	if(msg instanceof ArrayList){
+	/*if(msg instanceof ArrayList){
 		blockedList = (ArrayList<String>)msg;
 		return;
 	}
@@ -73,7 +73,7 @@ public class ChatClient extends AbstractClient
 	userparse = userparse.substring(1, userparse.indexOf(">") - 1);
 	if(blockedList.contains(userparse)){
 		return;
-	}
+	}*/
 	
     clientUI.display(msg.toString());
   }
