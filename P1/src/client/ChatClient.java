@@ -65,14 +65,24 @@ public class ChatClient extends AbstractClient
 	if(isConnected() == false){
 		connectionClosed();
 	}
-	if(msg instanceof ArrayList){
-		blockedList = (ArrayList<String>)msg;
-		return;
+	try{
+		if(msg instanceof ArrayList){
+			blockedList = (ArrayList<String>)msg;
+			System.out.println(blockedList.get(0));
+			return;
+		}
+		else{
+			String userparse = "";
+			userparse = msg.toString();
+			userparse = userparse.substring(1, userparse.indexOf(">"));
+			if(blockedList.contains(userparse)){
+				return;
+			}
+			
+		}
 	}
-	String userparse = msg.toString();
-	userparse = userparse.substring(1, userparse.indexOf(">") - 1);
-	if(blockedList.contains(userparse)){
-		return;
+	catch(Exception e){
+		
 	}
 	
     clientUI.display(msg.toString());
