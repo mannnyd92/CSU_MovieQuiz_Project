@@ -50,59 +50,86 @@ public class EchoServer extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
-  public void handleMessageFromClient
-  (Object msg, ConnectionToClient client)
-{
-	String login = msg.toString();
-	String log = "#login";
-	String connected = "connected";
-	boolean logbool = false;
-	try{
-		if(login.substring(0, 6).equals(log)){
-			logbool = true;
+  
+  public void login(Object msg, ConnectionToClient client){
+		String login = msg.toString();
+		String log = "#login";
+		String connected = "connected";
+		boolean logbool = false;
+		try{
+			if(login.substring(0, 6).equals(log)){
+				logbool = true;
+			}
+		}catch(Exception e){
+			
 		}
-	}catch(Exception e){
-		
-	}
-	if(logbool == true){
-		if(client.getInfo(connected) == null){
+		if(logbool == true){
+			if(client.getInfo(connected) == null){
 
-			if(!login.substring(0, 6).equals(log)){
+				if(!login.substring(0, 6).equals(log)){
+					try {
+						String error = "Login was not received.";
+						client.sendToClient(error);
+						client.close();
+						return;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				else{
+					String name = login.substring(8, login.length() - 1);
+					String id = "id";
+					client.setInfo(id, name);
+				}
+				
+				client.setInfo(connected, true);
+			}
+			else{
+				String error = "The #login command is invalid after logging in.";
 				try {
-					String error = "Login was not received.";
 					client.sendToClient(error);
-					client.close();
-					return;
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			else{
-				String name = login.substring(8, login.length() - 1);
-				String id = "id";
-				client.setInfo(id, name);
-			}
-			
-			client.setInfo(connected, true);
 		}
-		else{
-			String error = "The #login command is invalid after logging in.";
-			try {
-				client.sendToClient(error);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	
-	String id = "id";
-  System.out.println("Message received: " + msg + " from " + client);
-  String message = "<" + client.getInfo(id).toString() + "> " + msg;
-  this.sendToAllClients(message);
-}
-    
+	  
+  }
+  
+  public void block(Object msg, ConnectionToClient client){
+	  
+	  System.out.println(client.getInfo("id"));
+	  String[] temp = ((String)msg).split(" ");
+	  if(client.getInfo("id") == temp[1]){
+		  System.out.println("You cannot block the sending of messages to yourself.");
+	  }
+	  
+  }
+  
+  public void handleMessageFromClient
+  (Object msg, ConnectionToClient client)
+{
+	  String[] temp = ((String)msg).split(" ");
+	  
+	  if(((String)msg).charAt(0) == '#'){
+		  switch (temp[0]){
+		  		case "#block":	block(msg, client);
+		  						break;
+		  		case "#unblock":
+		  		case "#whoblocksme":
+		  		case "#whoiblock":
+		  		case "#login":	login(msg,client);
+		  						break;
+		  }
+		  
+	  }
+		  String id = "id";
+		  System.out.println("Message received: " + msg + " from " + client);
+		  String message = "<" + client.getInfo(id).toString() + "> " + msg;
+		  this.sendToAllClients(message);
+	  
+}   
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.

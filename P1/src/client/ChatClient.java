@@ -79,9 +79,20 @@ public class ChatClient extends AbstractClient
 		String param = "";
 		String chkmes = "";
 		boolean flag = false;
-		if(tmpmes.length() > 6){
-			
+		if(tmpmes.length() > 5){
+						
 			chkmes = tmpmes.substring(0,7);
+			
+			if(chkmes.equals("unblock")){
+				if( tmpmes.length() > 7){
+					if(tmpmes.charAt(7) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+						tmpmes = "unblock";
+					}
+				}else{System.out.println("Please give parameter after command!");}
+			}
 			
 			if(chkmes.equals("sethost")){
 				if( tmpmes.length() > 7){
@@ -108,6 +119,20 @@ public class ChatClient extends AbstractClient
 					}
 				}else{System.out.println("Please give parameter after command!");}
 			}
+			
+			chkmes = tmpmes.substring(0,5);
+			
+			if(chkmes.equals("block")){
+				if( tmpmes.length() > 5){
+					if(tmpmes.charAt(5) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+						tmpmes = "block";
+					}
+				}else{System.out.println("Please give parameter after command!");}
+			}
+			
 		}
 		
 		switch (tmpmes){
