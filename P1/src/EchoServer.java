@@ -98,9 +98,7 @@ public class EchoServer extends AbstractServer
   }
   
   public void block(Object msg, ConnectionToClient client){
-	  
 	  String[] temp = ((String)msg).split(" ");
-	    
 	  if(whoIBlockList(client).contains(temp[1])){
 		  try {
 			client.sendToClient("Messages from "+temp[1]+" were already blocked.");
@@ -128,7 +126,6 @@ public class EchoServer extends AbstractServer
 			}
 		  }
 	  }
-	  
   }
   
   public void unblock(Object msg, ConnectionToClient client){
@@ -143,16 +140,62 @@ public class EchoServer extends AbstractServer
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		  }	else {
+			  if(removeBlockedUser(client, unblock)){
+				  try {
+						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			  }
 		  }
-		  
 		  
 	  } catch(ArrayIndexOutOfBoundsException e){
 		  String block = "blocklist";
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
+		  if(temp.isEmpty()){
+				try {
+					client.sendToClient("No blocking is in effect.");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		  }else{
 		  temp.clear();
 		  client.setInfo(block, temp);
+		  }
 	  }
+  }
+  
+  public void whoBlocksMe(ConnectionToClient client){
+	  ArrayList<String> temp = new ArrayList<String>();
+	  temp = whoBlocksMeList(client);
+	  for(int i = 0; i < temp.size(); i++) {
+		  try {
+			client.sendToClient("Messages to "+(temp.get(i)).toString()+" are being blocked.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  }  
+  }
+  
+  public void whoIBlock(ConnectionToClient client){
+	  ArrayList<String> temp = new ArrayList<String>();
+	  temp = whoIBlockList(client);
+	  if(temp.isEmpty()){
+		  try {
+			client.sendToClient("No blocking is in effect.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  }
+	  for(int i = 0; i < temp.size(); i++) {
+		  try {
+			client.sendToClient("Messages from "+(temp.get(i)).toString()+" are blocked.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  } 
   }
   
   public void handleMessageFromClient
@@ -165,8 +208,10 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  		case "#unblock":	unblock(msg,client);
 		  							break;
-		  		case "#whoblocksme":
-		  		case "#whoiblock":
+		  		case "#whoblocksme":whoBlocksMe(client);
+		  							break;
+		  		case "#whoiblock":  whoIBlock(client);
+		  							break;
 		  		case "#login":	login(msg,client);
 		  						logwrite(msg,client);
 		  						break;
