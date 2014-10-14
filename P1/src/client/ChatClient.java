@@ -65,6 +65,7 @@ public class ChatClient extends AbstractClient
 	if(isConnected() == false){
 		connectionClosed();
 	}
+
 	try{
 		if(msg instanceof ArrayList){
 			blockedList = (ArrayList<String>)msg;
