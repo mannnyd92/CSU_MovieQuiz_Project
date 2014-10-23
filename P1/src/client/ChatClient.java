@@ -247,6 +247,9 @@ public class ChatClient extends AbstractClient
 								System.out.println("Your new login is <" + loginID + ">");
 								break;
 						
+			case "help":		helpInfo();
+								break;
+								
 			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
 		}
@@ -258,9 +261,26 @@ public class ChatClient extends AbstractClient
    
 	  }
   }
+  
   /**
    * This method terminates the client.
    */
+  
+  public void helpInfo(){
+	  System.out.println("	Command			Description");
+	  System.out.println("");
+	  System.out.println("	#login 			Logs user into the server.");
+	  System.out.println("	#logoff 		Logs user off of the server.");
+	  System.out.println("	#changelogin #### 	Changes username to ####. Must logoff and login for change to take effect.");
+	  System.out.println("	#gethost 		Displays the host.");
+	  System.out.println("	#getport 		Displays the port number.");
+	  System.out.println("	#sethost #### 		Changes the host to ####. Must be logged off.");
+	  System.out.println("	#setport #### 		Changes the port number to ####. Must be logged off.");
+	  System.out.println("	#block #### 		Blocks messages from user ####.");
+	  System.out.println("	#unblock #### 		Unblocks messages from user ####.");
+	  System.out.println("	#whoiblock 		Displays a list of users that you are blocking.");
+	  System.out.println("	#whoblocksme 		Displays a list of users that are blocking you.");
+  }
   
   public void send(String message){
 	  try
