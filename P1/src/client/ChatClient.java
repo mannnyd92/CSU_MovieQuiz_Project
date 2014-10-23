@@ -116,7 +116,9 @@ public class ChatClient extends AbstractClient
 		boolean flag = false;
 		if(tmpmes.length() > 5 && tmpmes.length() != 6){
 			
-			chkmes = tmpmes.substring(0, 11);
+			if(tmpmes.length() > 10){
+				chkmes = tmpmes.substring(0, 11);
+			}
 			
 			if(chkmes.equals("changelogin")){
 				if(tmpmes.length() > 11){
