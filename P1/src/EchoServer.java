@@ -232,6 +232,24 @@ public class EchoServer extends AbstractServer
 	  } 
   }
   
+  public void status(Object msg, ConnectionToClient client){
+	  String [] parmes = ((String) msg).split(" ");
+	  //TODO logic for determining  a user or a channel
+	  //code for status on a user
+	  String status;
+	  if((boolean)client.getInfo("availability") == false){
+		  status = "User " + parmes[1] + " is unavailable.";
+		 
+	  }else if((boolean)client.getInfo("idle")){
+		  status = "User " + parmes[1] + " is idle.";
+	  }else if((boolean)client.getInfo("connected")){
+		  status = "User " + parmes[1] + " is online.";
+	  }else if(!(boolean)client.getInfo("connected") || client.getInfo("connected") == null ){
+		  status = "User " + parmes[1] + " is offline.";
+	  }else{status = "User " + parmes[1] + "'s status not found.";}
+	  
+	  try{ client.sendToClient(status);}catch(Exception e){};
+  }
   public void handleMessageFromClient
   (Object msg, ConnectionToClient client)
 {

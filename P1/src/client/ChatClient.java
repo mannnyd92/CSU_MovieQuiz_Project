@@ -4,11 +4,14 @@
 
 package client;
 
-import ocsf.client.*;
-import common.*;
-
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ocsf.client.AbstractClient;
+
+import common.ChatIF;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -30,6 +33,8 @@ public class ChatClient extends AbstractClient
   ChatIF clientUI; 
   String loginID;
   ArrayList<String> blockedList = new ArrayList<String>();
+  Timer timer = new Timer();
+  //FiveMinutes fiveminutes = new FiveMinutes();
   
   //Constructors ****************************************************
   
@@ -50,6 +55,7 @@ public class ChatClient extends AbstractClient
     openConnection();
     String loginMsg = "#login <" + login + ">";
     this.sendToServer(loginMsg);
+    timer.schedule(new FiveMinutes(), 300000);
   }
 
   
@@ -302,6 +308,14 @@ public class ChatClient extends AbstractClient
 	    {
 	    
 	      sendToServer(message);
+	      try{
+	    	  timer.cancel();
+	      }
+	      catch(Exception e){
+	    	  e.printStackTrace();
+	      }
+	      timer = new Timer();
+	      timer.schedule(new FiveMinutes(), 300000);
 	    }
 	    catch(IOException e)
 	    {
@@ -310,6 +324,19 @@ public class ChatClient extends AbstractClient
 	      quit();
 	    }
   }
+  
+  class FiveMinutes extends TimerTask{
+	  public void run(){
+		  try{
+			  String message = "#idle";
+			  sendToServer(message);
+		  }
+		  catch(IOException e){
+			  e.printStackTrace();
+		  }
+	  }
+  }
+  
   public void quit()
   {
     try
