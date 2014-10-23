@@ -256,6 +256,15 @@ public class ChatClient extends AbstractClient
 			case "help":		helpInfo();
 								break;
 								
+			case "notavailable":	send(message);
+									break;
+			case "available":		send(message);
+									break;
+			case "ilde":			send(message);
+									break;
+			case "status":			send(message);
+									break;
+									
 			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
 		}

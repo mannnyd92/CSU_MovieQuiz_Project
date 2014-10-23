@@ -237,6 +237,9 @@ public class EchoServer extends AbstractServer
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
 	  String status;
+	  if (parmes[1] == null){
+		  return;
+	  }
 	  if((boolean)client.getInfo("availability") == false){
 		  status = "User " + parmes[1] + " is unavailable.";
 		 
@@ -258,20 +261,30 @@ public class EchoServer extends AbstractServer
 		  switch (temp[0]){
 		  		case "#block":		block(msg, client);
 		  							break;
+		  							
 		  		case "#unblock":	unblock(msg,client);
 		  							break;
+		  							
 		  		case "#whoblocksme":whoBlocksMe(client);
 		  							break;
+		  							
 		  		case "#whoiblock":  whoIBlock(client);
 		  							break;
-		  		case "#login":	login(msg,client);
-		  						break;
-		  		case "#idle":	client.setInfo("idle", true );
-		  						break;
-		  		case "#available": client.setInfo("availability", true);
-		  						break;
+		  							
+		  		case "#login":		login(msg,client);
+		  							break;
+		  							
+		  		case "#idle":		client.setInfo("idle", true );
+		  							break;
+		  							
+		  		case "#available": 	client.setInfo("availability", true);
+		  							break;
+		  							
 		  		case "#notavailable": client.setInfo("availability", false);
-		  						break;
+		  							break;
+		  							
+		  		case "#status": 	status(msg,client);
+		  							break;
 		  }
 		  
 	  }else{
