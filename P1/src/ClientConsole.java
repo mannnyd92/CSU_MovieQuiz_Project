@@ -118,7 +118,11 @@ public class ClientConsole implements ChatIF
       if(args.length > 1){
     	  host = args[1];
       }
+      if(args.length == 1){
+    	  host = args[1];
+      }
       if(args.length > 2){
+    	  host = args[1];
     	  String portstring = args[2];
     	  port = Integer.parseInt(portstring);
       }
