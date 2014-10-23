@@ -178,6 +178,7 @@ public class EchoServer extends AbstractServer
 			  if(removeBlockedUser(client, unblock)){
 				  try {
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
+						client.sendToClient(client.getInfo("blocklist"));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -281,9 +282,14 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  							
 		  		case "#notavailable": client.setInfo("availability", false);
+<<<<<<< HEAD
 		  							break;
 		  							
 		  		case "#status": 	status(msg,client);
+=======
+		  						break;
+		  		case "#private":	sendToClient(msg, client);
+>>>>>>> 8cc3e299ad2fe0bebaca2fd63f8916fd040c534b
 		  							break;
 		  }
 		  
@@ -299,6 +305,21 @@ public class EchoServer extends AbstractServer
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
+  
+  public void sendToClient(Object msg, ConnectionToClient client){
+	  Thread[] clientThreadList = getClientConnections();
+	  ConnectionToClient cl;
+	  String[] temp = ((String) msg).split(" ",3);
+	  for (int i=0; i<clientThreadList.length; i++){
+		  cl = (ConnectionToClient)clientThreadList[i];
+		  if(cl.getInfo("id").toString().equals(temp[1])){
+		  		try{
+		  			((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  		}catch (Exception ex) {}
+		  }
+	  }
+  } 
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
