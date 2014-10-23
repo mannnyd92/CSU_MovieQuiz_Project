@@ -78,9 +78,24 @@ public class EchoServer extends AbstractServer
 					}
 				}
 				else{
+					//TODO put in unique user check
+					
 					String name = login.substring(8, login.length() - 1);
-					String id = "id";
-					client.setInfo(id, name);
+					if(validUsers.contains(name)){
+						String id = "id";
+						client.setInfo(id, name);
+					}
+					else{
+						try{
+							String error = "Login is not on the Valid Users list.";
+							client.sendToClient(error);
+							client.close();
+							return;
+						} catch (Exception e){
+							e.printStackTrace();
+						}
+						
+					}
 				}
 				
 				client.setInfo(connected, true);
