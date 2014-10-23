@@ -115,6 +115,23 @@ public class ChatClient extends AbstractClient
 		String chkmes = "";
 		boolean flag = false;
 		if(tmpmes.length() > 5 && tmpmes.length() != 6){
+			
+			chkmes = tmpmes.substring(0, 11);
+			
+			if(chkmes.equals("changelogin")){
+				if(tmpmes.length() > 11){
+					if(tmpmes.charAt(11) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+						param = tmpmes.substring(12, tmpmes.length());
+						tmpmes = "changelogin";
+					}
+				}
+				else{
+					System.out.println("Please give paramter after command!");
+				}
+			}
 						
 			chkmes = tmpmes.substring(0,7);
 			
@@ -154,6 +171,7 @@ public class ChatClient extends AbstractClient
 					}
 				}else{System.out.println("Please give parameter after command!");}
 			}
+	
 			
 			chkmes = tmpmes.substring(0,5);
 			
@@ -222,6 +240,10 @@ public class ChatClient extends AbstractClient
 			
 			case "whoblocksme":	send(message);
 								break;
+			
+			case "changelogin": loginID = param;
+								System.out.println("Your new login is <" + loginID + ">");
+								break;
 						
 			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
 			
@@ -267,7 +289,7 @@ public class ChatClient extends AbstractClient
   
   protected void connectionException(Exception exception){
 	  System.out.println("Server has shut down.");
-	  quit();
+	  
 	  
   }
   

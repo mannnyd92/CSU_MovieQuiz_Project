@@ -28,6 +28,7 @@ public class EchoServer extends AbstractServer
   final public static int DEFAULT_PORT = 5555;
   
   protected static ArrayList<String> validUsers = new ArrayList<String>();
+  protected static ArrayList<String> LoggedInUsers = new ArrayList<String>();
   
   //Constructors ****************************************************
   
@@ -57,6 +58,7 @@ public class EchoServer extends AbstractServer
 		String log = "#login";
 		String connected = "connected";
 		boolean logbool = false;
+		
 		try{
 			if(login.substring(0, 6).equals(log)){
 				logbool = true;
@@ -78,16 +80,30 @@ public class EchoServer extends AbstractServer
 					}
 				}
 				else{
-					//TODO put in unique user check
-					
+					System.out.println(LoggedInUsers);
 					String name = login.substring(8, login.length() - 1);
-					if(validUsers.contains(name)){
-						String id = "id";
-						client.setInfo(id, name);
-					}
-					else{
+					//checks for unique user name
+					if(!LoggedInUsers.contains(name)){
+						if(validUsers.contains(name)){
+							String id = "id";
+							client.setInfo(id, name);
+							LoggedInUsers.add(name);
+							
+						}
+						else{
+							try{
+								String error = "Login is not on the Valid Users list.";
+								client.sendToClient(error);
+								client.close();
+								return;
+							} catch (Exception e){
+								e.printStackTrace();
+							}
+							
+						}
+					}else{
 						try{
-							String error = "Login is not on the Valid Users list.";
+							String error = "Username already in use please try another!";
 							client.sendToClient(error);
 							client.close();
 							return;
@@ -95,7 +111,7 @@ public class EchoServer extends AbstractServer
 							e.printStackTrace();
 						}
 						
-					}
+						}
 				}
 				
 				client.setInfo(connected, true);
@@ -120,7 +136,7 @@ public class EchoServer extends AbstractServer
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	  } else if(client.getInfo("id").equals(temp[1])){
+	  } else if(client.getInfo("id").equals(temp[1])){//TODO put in unique user check
 		  try {
 			client.sendToClient("You cannot block the sending of messages to yourself.");
 		} catch (IOException e) {
