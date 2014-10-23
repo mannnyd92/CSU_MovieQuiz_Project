@@ -88,6 +88,7 @@ public class EchoServer extends AbstractServer
 							String id = "id";
 							client.setInfo(id, name);
 							LoggedInUsers.add(name);
+							logwrite(msg,client);
 							
 						}
 						else{
@@ -103,7 +104,7 @@ public class EchoServer extends AbstractServer
 						}
 					}else{
 						try{
-							String error = "Username already in use please try another!";
+							String error = "Username already in use please try another! Use #help to do so! ";
 							client.sendToClient(error);
 							client.close();
 							return;
@@ -244,7 +245,6 @@ public class EchoServer extends AbstractServer
 		  		case "#whoiblock":  whoIBlock(client);
 		  							break;
 		  		case "#login":	login(msg,client);
-		  						logwrite(msg,client);
 		  						break;
 		  }
 		  
