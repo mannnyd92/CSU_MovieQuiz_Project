@@ -87,6 +87,8 @@ public class EchoServer extends AbstractServer
 						if(validUsers.contains(name)){
 							String id = "id";
 							client.setInfo(id, name);
+							client.setInfo("availability", true);
+							client.setInfo("idle", false);
 							LoggedInUsers.add(name);
 							logwrite(msg,client);
 							
@@ -246,9 +248,16 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  		case "#login":	login(msg,client);
 		  						break;
+		  		case "#idle":	client.setInfo("idle", true );
+		  						break;
+		  		case "#available": client.setInfo("availability", true);
+		  						break;
+		  		case "#notavailable": client.setInfo("availability", false);
+		  						break;
 		  }
 		  
 	  }else{
+		  client.setInfo("idle", false);
 		  logwrite(msg,client);
 	  }
 }   
