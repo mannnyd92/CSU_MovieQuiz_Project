@@ -174,7 +174,19 @@ public class ChatClient extends AbstractClient
 				}else{System.out.println("Please give parameter after command!");}
 			}
 	
-			
+			if(chkmes.equals("private")){
+				if( tmpmes.length() > 8){
+					if(tmpmes.charAt(7) != ' '){
+						System.out.println("A space is required after the command!");
+					}
+					else{
+					param = tmpmes.substring(8, tmpmes.length());
+					tmpmes = "private";
+					flag = true;
+					}
+				}else{System.out.println("Please give parameter after command!");}
+			}
+							
 			chkmes = tmpmes.substring(0,5);
 			
 			if(chkmes.equals("block")){
@@ -245,6 +257,9 @@ public class ChatClient extends AbstractClient
 			
 			case "changelogin": loginID = param;
 								System.out.println("Your new login is <" + loginID + ">");
+								break;
+								
+			case "private":		send(message);
 								break;
 						
 			case "help":		helpInfo();

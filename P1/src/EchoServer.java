@@ -254,6 +254,8 @@ public class EchoServer extends AbstractServer
 		  						break;
 		  		case "#notavailable": client.setInfo("availability", false);
 		  						break;
+		  		case "#private":	sendToClient(msg, client);
+		  							break;
 		  }
 		  
 	  }else{
@@ -268,6 +270,21 @@ public class EchoServer extends AbstractServer
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
+  
+  public void sendToClient(Object msg, ConnectionToClient client){
+	  Thread[] clientThreadList = getClientConnections();
+	  ConnectionToClient cl;
+	  String[] temp = ((String) msg).split(" ",3);
+	  for (int i=0; i<clientThreadList.length; i++){
+		  cl = (ConnectionToClient)clientThreadList[i];
+		  if(cl.getInfo("id").toString().equals(temp[1])){
+		  		try{
+		  			((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  		}catch (Exception ex) {}
+		  }
+	  }
+  } 
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
