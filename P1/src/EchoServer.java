@@ -80,7 +80,7 @@ public class EchoServer extends AbstractServer
 					}
 				}
 				else{
-					System.out.println(LoggedInUsers);
+					
 					String name = login.substring(8, login.length() - 1);
 					//checks for unique user name
 					if(!LoggedInUsers.contains(name)){
