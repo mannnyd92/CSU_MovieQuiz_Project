@@ -75,7 +75,6 @@ public class ChatClient extends AbstractClient
 	try{
 		if(msg instanceof ArrayList){
 			blockedList = (ArrayList<String>)msg;
-			System.out.println(blockedList.get(0));
 			return;
 		}
 		else{

@@ -178,6 +178,7 @@ public class EchoServer extends AbstractServer
 			  if(removeBlockedUser(client, unblock)){
 				  try {
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
+						client.sendToClient(client.getInfo("blocklist"));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
