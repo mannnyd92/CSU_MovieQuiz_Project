@@ -233,6 +233,24 @@ public class EchoServer extends AbstractServer
 	  } 
   }
   
+  public void status(Object msg, ConnectionToClient client){
+	  String [] parmes = ((String) msg).split(" ");
+	  //TODO logic for determining  a user or a channel
+	  //code for status on a user
+	  String status;
+	  if((boolean)client.getInfo("availability") == false){
+		  status = "User " + parmes[1] + " is unavailable.";
+		 
+	  }else if((boolean)client.getInfo("idle")){
+		  status = "User " + parmes[1] + " is idle.";
+	  }else if((boolean)client.getInfo("connected")){
+		  status = "User " + parmes[1] + " is online.";
+	  }else if(!(boolean)client.getInfo("connected") || client.getInfo("connected") == null ){
+		  status = "User " + parmes[1] + " is offline.";
+	  }else{status = "User " + parmes[1] + "'s status not found.";}
+	  
+	  try{ client.sendToClient(status);}catch(Exception e){};
+  }
   public void handleMessageFromClient
   (Object msg, ConnectionToClient client)
 {
@@ -255,6 +273,8 @@ public class EchoServer extends AbstractServer
 		  						break;
 		  		case "#notavailable": client.setInfo("availability", false);
 		  						break;
+		  		case "#private":	sendToClient(msg, client);
+		  							break;
 		  }
 		  
 	  }else{
@@ -269,6 +289,21 @@ public class EchoServer extends AbstractServer
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
+  
+  public void sendToClient(Object msg, ConnectionToClient client){
+	  Thread[] clientThreadList = getClientConnections();
+	  ConnectionToClient cl;
+	  String[] temp = ((String) msg).split(" ",3);
+	  for (int i=0; i<clientThreadList.length; i++){
+		  cl = (ConnectionToClient)clientThreadList[i];
+		  if(cl.getInfo("id").toString().equals(temp[1])){
+		  		try{
+		  			((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  		}catch (Exception ex) {}
+		  }
+	  }
+  } 
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
