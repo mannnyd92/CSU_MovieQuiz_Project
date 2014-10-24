@@ -1,3 +1,6 @@
 bob
 tim
 nobody
+server
+al
+jim

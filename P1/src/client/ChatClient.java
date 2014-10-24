@@ -83,7 +83,7 @@ public class ChatClient extends AbstractClient
 			userparse = msg.toString();
 			userparse = userparse.substring(1, userparse.indexOf(">"));
 			
-			if(blockedList.contains(userparse)){
+			if(blockedList.contains(userparse) || blockedList.contains("server")){
 				
 				return;
 			}
@@ -97,7 +97,7 @@ public class ChatClient extends AbstractClient
 	
 	String userparse = (String)msg;
 	try{
-	userparse = userparse.substring(1, userparse.indexOf(">"));
+		userparse = userparse.substring(1, userparse.indexOf(">"));
 	
 	}catch(Exception e){}
 	

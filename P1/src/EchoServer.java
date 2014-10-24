@@ -57,20 +57,25 @@ public class EchoServer extends AbstractServer
   
   public void login(Object msg, ConnectionToClient client){
 		String login = msg.toString();
+		 String[] templog = ((String)msg).split(" ");
 		String log = "#login";
 		String connected = "connected";
 		boolean logbool = false;
 		
 		try{
 			if(login.substring(0, 6).equals(log)){
-				logbool = true;
+				System.out.println(templog[1]);
+				if(!templog[1].equals("<server>")){
+					logbool = true;
+				}else{
+					client.sendToClient("Cannot log in as server, #help for more info!");
+					client.close();}
 			}
 		}catch(Exception e){
 			
 		}
 		if(logbool == true){
 			if(client.getInfo(connected) == null){
-
 				if(!login.substring(0, 6).equals(log)){
 					try {
 						String error = "Login was not received.";
@@ -79,7 +84,7 @@ public class EchoServer extends AbstractServer
 						return;
 					} catch (IOException e) {
 						e.printStackTrace();
-					}
+						}
 				}
 				else{
 					
