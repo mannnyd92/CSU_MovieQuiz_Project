@@ -299,14 +299,35 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  							
 		  		case "#notavailable": client.setInfo("availability", false);
-
 		  							break;
 		  							
 		  		case "#status": 	status(msg,client);
-
-		  						break;
+		  							break;
+		  							
 		  		case "#private":	sendToClientPrivate(msg, client);
-
+		  							break;
+		  		//Chat command
+		  		case "#channel":	channelChat(msg, client);
+		  			
+		  							break;
+		  		//Creates the channel only, does not automatically join, unique list
+		  		case "#createchannel":	createChannel(msg, client);
+		  							
+		  							break;
+		  		//Joins the channel if it exists, error message if it doesnt exist
+		  		case "#joinchannel":	joinChannel(msg, client);
+		  			
+		  							break;
+		  		//Leaves the specified channel if they are in it
+		  		case "#leavechannel":	leaveChannel(msg, client);
+		  			
+		  							break;
+		  		//Produces a list of all current channels
+		  		case "#listchannel":	listChannels(msg, client);
+		  			
+		  							break;
+		  							
+		  		default:			System.out.println("Server handleMessageFromClient default case got hit.");
 		  							break;
 		  }
 		  
@@ -316,7 +337,37 @@ public class EchoServer extends AbstractServer
 	  }
 }   
   
-  public void logwrite(Object msg, ConnectionToClient client){
+private void listChannels(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void leaveChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void joinChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void createChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void channelChat(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
 	  System.out.println("Message received: " + msg + " from " + client);
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
