@@ -178,7 +178,6 @@ public class EchoServer extends AbstractServer
 			  if(removeBlockedUser(client, unblock)){
 				  try {
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
-						client.sendToClient(client.getInfo("blocklist"));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -344,6 +343,7 @@ public class EchoServer extends AbstractServer
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  temp.add(blockee);
+		  System.out.println("added: "+temp);
 		  client.setInfo(block, temp);
 		  client.sendToClient(temp);
 		  return true;
@@ -359,8 +359,13 @@ public class EchoServer extends AbstractServer
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  int index = temp.indexOf(unblockee);
-		  temp.remove(index);
+		  System.out.println("Before: "+temp);
+		  System.out.println(client.getInfo(block));
+		  temp.remove(unblockee);
+		  System.out.println("After: "+temp);
 		  client.setInfo(block, temp);
+		  System.out.println(client.getInfo(block));
+		  
 		  return true;
 	  }
 	  catch(Exception e){
