@@ -4,6 +4,8 @@
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import ocsf.server.*;
@@ -156,6 +158,9 @@ public class EchoServer extends AbstractServer
 		  if(addBlockedUser(client, temp[1])){
 			  try {
 				client.sendToClient("Messages from "+temp[1]+" will be blocked.");
+				ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
+				client.sendToClient(copy);
+				//client.sendToClient(client.getInfo("blocklist"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -177,12 +182,15 @@ public class EchoServer extends AbstractServer
 				e.printStackTrace();
 			}
 		  }	else {
-			  System.out.println("Before: " + client.getInfo("blocklist"));
+			  
 			  if(removeBlockedUser(client, unblock)){
 				  try {
-					  	System.out.println("After: " + client.getInfo("blocklist"));
+					  	
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
-						
+						ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
+						client.sendToClient(copy);
+						//client.sendToClient(client.getInfo("blocklist"));
+						  
 						
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -330,6 +338,7 @@ public class EchoServer extends AbstractServer
 		  }
 	  }
   } 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
@@ -351,6 +360,7 @@ public class EchoServer extends AbstractServer
 	}
 	return blocklist;
   }
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**Method that returns an arraylist containing the users
    * who are blocked from the current client
@@ -363,6 +373,7 @@ public class EchoServer extends AbstractServer
 	  blocklist = (ArrayList<String>) client.getInfo(block);
 	  return blocklist;
   }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected boolean addBlockedUser(ConnectionToClient client, String blockee){
 	  try{
@@ -371,42 +382,45 @@ public class EchoServer extends AbstractServer
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  temp.add(blockee);
 		  client.setInfo(block, temp);
-		  client.sendToClient(temp);
+		  
 		  return true;
 	  }
 	  catch(Exception e){
 		  return false;
 	  }
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
 	  String block = "blocklist";
 	  try{
-		  System.out.println("fuck");
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  int index = temp.indexOf(unblockee);
 		  temp.remove(index);
 		  client.setInfo(block, temp);
 		  System.out.println("temp: "+ temp);
-		  client.sendToClient(temp);
+		  
 		  return true;
 	  }
 	  catch(Exception e){
 		  return false;
 	  }
   }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method overrides the one in the superclass.  Called
    * when the server starts listening for connections.
    */
+  
   protected void serverStarted()
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
      
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method overrides the one in the superclass.  Called
@@ -417,7 +431,8 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server has stopped listening for connections.");
   }
-  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
   protected void clientConnected(ConnectionToClient client) {
 	  String id = "id";
 	  String block = "blocklist";
@@ -427,10 +442,12 @@ public class EchoServer extends AbstractServer
 	  client.setInfo(block, blocklist);
 	  System.out.println(client + " has connected.");
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   synchronized protected void clientDisconnected(ConnectionToClient client) {
 	  System.out.println(client + " has been disconnected.");
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
 	  
@@ -438,12 +455,13 @@ public class EchoServer extends AbstractServer
 	  LoggedInUsers.remove(client.getInfo(id));
 	  System.out.println(client.getInfo(id) + " has disconnected due to: " + exception);
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected void listeningException(Throwable exception) {
 	  System.out.println(exception);
   }
   
-  //Class methods ***************************************************
+  //Class methods ***************************************************///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method is responsible for the creation of 

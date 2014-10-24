@@ -33,7 +33,7 @@ public class ChatClient extends AbstractClient
   String loginID;
   ArrayList<String> blockedList = new ArrayList<String>();
   Timer timer = new Timer();
-  //FiveMinutes fiveminutes = new FiveMinutes();
+  
   
   //Constructors ****************************************************
   
@@ -67,7 +67,7 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-	  System.out.println(msg);
+	  
 	if(isConnected() == false){
 		connectionClosed();
 	}
@@ -75,19 +75,16 @@ public class ChatClient extends AbstractClient
 	try{
 		
 		if(msg instanceof ArrayList){
-			//blockedList.clear();
-			blockedList.addAll((ArrayList<String>) msg);
-			//((ArrayList) msg).clear();
-			System.out.println("update: " + blockedList);
+			blockedList = ((ArrayList<String>) msg);
 			return;
 		}
 		else{
 			String userparse = "";
 			userparse = msg.toString();
 			userparse = userparse.substring(1, userparse.indexOf(">"));
-			System.out.println(blockedList + "else");
+			
 			if(blockedList.contains(userparse)){
-				System.out.println("fuckfuck");
+				
 				return;
 			}
 			
@@ -106,7 +103,7 @@ public class ChatClient extends AbstractClient
 	
 	
 	if(blockedList.contains(userparse)){
-		System.out.println("fuckfuckfuck");
+		
 		return;
 	}
 	

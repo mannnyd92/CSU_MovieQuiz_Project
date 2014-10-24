@@ -67,7 +67,7 @@ public class ClientConsole implements ChatIF
   {
     try
     {
-    	System.out.println("try");
+    	
     	BufferedReader fromConsole = new BufferedReader(new InputStreamReader(System.in));
     	String message;
       
