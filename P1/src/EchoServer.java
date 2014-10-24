@@ -305,7 +305,7 @@ public class EchoServer extends AbstractServer
 		  		case "#status": 	status(msg,client);
 
 		  						break;
-		  		case "#private":	sendToClient(msg, client);
+		  		case "#private":	sendToClientPrivate(msg, client);
 
 		  							break;
 		  }
@@ -323,7 +323,7 @@ public class EchoServer extends AbstractServer
 	  this.sendToAllClients(message);
   }
   
-  public void sendToClient(Object msg, ConnectionToClient client){
+  public void sendToClientPrivate(Object msg, ConnectionToClient client){
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
 	  String[] temp = ((String) msg).split(" ",3);
@@ -380,7 +380,6 @@ public class EchoServer extends AbstractServer
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  temp.add(blockee);
-		  System.out.println("added: "+temp);
 		  client.setInfo(block, temp);
 		  
 		  return true;
@@ -400,7 +399,6 @@ public class EchoServer extends AbstractServer
  		  int index = temp.indexOf(unblockee);
  		  temp.remove(index);
  		  client.setInfo(block, temp);
- 		  System.out.println("temp: "+ temp);
 		  
 		  return true;
 	  }
