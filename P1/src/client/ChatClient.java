@@ -10,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ocsf.client.AbstractClient;
-
 import common.ChatIF;
 
 /**
@@ -18,7 +17,7 @@ import common.ChatIF;
  * superclass in order to give more functionality to the client.
  *
  * @author Dr Timothy C. Lethbridge
- * @author Dr Robert Lagani&egrave;
+ * @author Dr Robert Lagani&egrave;handleMessageFromServer
  * @author Fran&ccedil;ois B&eacute;langer
  * @version July 2000
  */
@@ -34,7 +33,7 @@ public class ChatClient extends AbstractClient
   String loginID;
   ArrayList<String> blockedList = new ArrayList<String>();
   Timer timer = new Timer();
-  //FiveMinutes fiveminutes = new FiveMinutes();
+  
   
   //Constructors ****************************************************
   
@@ -68,20 +67,23 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
+	  
 	if(isConnected() == false){
 		connectionClosed();
 	}
 
 	try{
+		
 		if(msg instanceof ArrayList){
-			System.out.println(msg);
-			blockedList = (ArrayList<String>)msg;
+			blockedList = ((ArrayList<String>) msg);
 			return;
 		}else{
 			String userparse = "";
 			userparse = msg.toString();
 			userparse = userparse.substring(1, userparse.indexOf(">"));
+			
 			if(blockedList.contains(userparse)){
+				
 				return;
 			}
 			
@@ -100,12 +102,13 @@ public class ChatClient extends AbstractClient
 	
 	
 	if(blockedList.contains(userparse)){
+		
 		return;
 	}
 	
     clientUI.display(msg.toString());
   }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
    * This method handles all data coming from the UI            
    *
@@ -113,146 +116,62 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-	 
-	  if(message.charAt(0) == '#'){
-		String tmpmes = message.substring(1,message.length());
-		String param = "";
-		String chkmes = "";
-		boolean flag = false;
-		if(tmpmes.length() > 5 && tmpmes.length() != 6){
-			
-			if(tmpmes.length() > 10){
-				chkmes = tmpmes.substring(0, 11);
-			}
-			
-			if(chkmes.equals("changelogin")){
-				if(tmpmes.length() > 11){
-					if(tmpmes.charAt(11) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-						param = tmpmes.substring(12, tmpmes.length());
-						tmpmes = "changelogin";
-					}
-				}
-				else{
-					System.out.println("Please give paramter after command!");
-				}
-			}
-						
-			chkmes = tmpmes.substring(0,7);
-			
-			if(chkmes.equals("unblock")){
-				if( tmpmes.length() > 7){
-					if(tmpmes.charAt(7) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-						tmpmes = "unblock";
-					}
-				}else{System.out.println("Please give parameter after command!");}
-			}
-			
-			if(chkmes.equals("sethost")){
-				if( tmpmes.length() > 7){
-					if(tmpmes.charAt(7) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-						param = tmpmes.substring(8, tmpmes.length());
-						tmpmes = "sethost";
-						flag = true;
-					}
-				}else{System.out.println("Please give parameter after command!");}
-			}
-			
-			if(chkmes.equals("setport")){
-				if( tmpmes.length() > 8){
-					if(tmpmes.charAt(7) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-					param = tmpmes.substring(8, tmpmes.length());
-					tmpmes = "setport";
-					flag = true;
-					}
-				}else{System.out.println("Please give parameter after command!");}
-			}
-	
-			if(chkmes.equals("private")){
-				if( tmpmes.length() > 8){
-					if(tmpmes.charAt(7) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-					param = tmpmes.substring(8, tmpmes.length());
-					tmpmes = "private";
-					flag = true;
-					}
-				}else{System.out.println("Please give parameter after command!");}
-			}
-							
-			chkmes = tmpmes.substring(0,5);
-			
-			if(chkmes.equals("block")){
-				if( tmpmes.length() > 5){
-					if(tmpmes.charAt(5) != ' '){
-						System.out.println("A space is required after the command!");
-					}
-					else{
-						tmpmes = "block";
-					}
-				}else{System.out.println("Please give parameter after command!");}
-			}
-			
-		}
+	  String[] mesarray = ((String)message).split(" ");
+	  
+	  if(mesarray[0].charAt(0) == '#'){
 		
+		String tmp = (String)mesarray[0];
+		String tmpmes = tmp.substring(1,tmp.length());
+		String param = "";	
 		switch (tmpmes){
-			case "quit":	quit();
-							break;
+		
+			case "quit":		quit();
+								break;
 							
-			case "logoff":	try {closeConnection();}catch(Exception e){}
-							break;
+			case "logoff":		try {closeConnection();}catch(Exception e){}
+								break;
 							
-			case "sethost":	if(!isConnected() && flag){
-								setHost(param);
-								flag = false;
-							}else if (isConnected() && flag){
-								System.out.println("Already Logged in, You must logoff to sethost!");
-							}
-							break;
+			case "sethost":		param = mesarray[1];
+								if(!isConnected()){
+									setHost(param);
+								
+								}else if (isConnected()){
+									System.out.println("Already Logged in, You must logoff to sethost!");
+								}
+								break;
 							
-			case "setport":	if(!isConnected() && flag){
-								try{
-									int port = Integer.valueOf(param);
-									setPort(port);
-									flag = false;
-								}catch(Exception e){}
-							}else if(isConnected() && flag){
-								System.out.println("Already Logged in!, You must logoff to setport");}
-							break;	
+			case "setport":		param = mesarray[1];
+								if(!isConnected()){
+									try{
+										int port = Integer.valueOf(param);
+										setPort(port);
+									
+									}catch(Exception e){}
+								}else if(isConnected()){
+									System.out.println("Already Logged in!, You must logoff to setport");}
+								break;	
 							
-			case "login":	if(isConnected()){
-								System.out.println("Already logged in!");
-							}else{
-								try{
-									openConnection();
-								    String loginMsg = "#login <" + loginID + ">";
-								    this.sendToServer(loginMsg);
-								}catch(Exception e){}
-							}break;
+			case "login":		if(isConnected()){
+									System.out.println("Already logged in!");
+								}else{
+									try{
+										openConnection();
+									    String loginMsg = "#login <" + loginID + ">";
+									    this.sendToServer(loginMsg);
+									}catch(Exception e){}
+								}break;
 			
-			case "gethost":	System.out.println(getHost());
-							break;
+			case "gethost":		System.out.println(getHost());
+								break;
 							
-			case "getport":	System.out.println(getPort());
-							break;
+			case "getport":		System.out.println(getPort());
+								break;
 							
-			case "block":	send(message);
-							break;
+			case "block":		send(message);
+								break;
 			
-			case "unblock": send(message);
-							break;
+			case "unblock": 	send(message);
+								break;
 			
 			case "whoiblock":	send(message);
 								break;
@@ -260,7 +179,8 @@ public class ChatClient extends AbstractClient
 			case "whoblocksme":	send(message);
 								break;
 			
-			case "changelogin": loginID = param;
+			case "changelogin": param = mesarray[1];
+								loginID = param;
 								System.out.println("Your new login is <" + loginID + ">");
 								break;
 								
@@ -270,7 +190,19 @@ public class ChatClient extends AbstractClient
 			case "help":		helpInfo();
 								break;
 								
-			default:		System.out.println("# Requires that it is followed by a command and a parameter!");
+			case "notavailable":	send(message);
+									break;
+									
+			case "available":		send(message);
+									break;
+									
+			case "ilde":			send(message);
+									break;
+									
+			case "status":			send(message);
+									break;
+									
+			default:		System.out.println("# Requires formatting, use #help command for more info");
 			
 		}
 			  
@@ -281,7 +213,7 @@ public class ChatClient extends AbstractClient
    
 	  }
   }
-  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
    * This method terminates the client.
    */
@@ -302,6 +234,11 @@ public class ChatClient extends AbstractClient
 	  System.out.println("	#whoblocksme 		Displays a list of users that are blocking you.");
 	  System.out.println("	#quit			Exits the program.");
   }
+  
+ 
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
   
   public void send(String message){
 	  try
@@ -324,6 +261,7 @@ public class ChatClient extends AbstractClient
 	      quit();
 	    }
   }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   class FiveMinutes extends TimerTask{
 	  public void run(){
@@ -336,23 +274,28 @@ public class ChatClient extends AbstractClient
 		  }
 	  }
   }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void quit()
   {
     try
     {
+    	
       closeConnection();
     }
     catch(IOException e) {}
     System.exit(0);
   }
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected void connectionClosed() {
+	
 	  System.out.println("You have been disconnected.");
   }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected void connectionException(Exception exception){
-	  System.out.println("Server has shut down.");
+	  System.out.println("Connection has been closed!");
 	  
 	  
   }

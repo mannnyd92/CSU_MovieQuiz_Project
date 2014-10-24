@@ -4,6 +4,8 @@
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import ocsf.server.*;
@@ -44,7 +46,7 @@ public class EchoServer extends AbstractServer
   }
 
   
-  //Instance methods ************************************************
+  //Instance methods //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method handles any messages received from the client.
@@ -130,6 +132,7 @@ public class EchoServer extends AbstractServer
 		}
 	  
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void block(Object msg, ConnectionToClient client){
 	  String[] temp = ((String)msg).split(" ");
@@ -155,12 +158,16 @@ public class EchoServer extends AbstractServer
 		  if(addBlockedUser(client, temp[1])){
 			  try {
 				client.sendToClient("Messages from "+temp[1]+" will be blocked.");
+				ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
+				client.sendToClient(copy);
+				//client.sendToClient(client.getInfo("blocklist"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		  }
 	  }
   }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void unblock(Object msg, ConnectionToClient client){
 	
@@ -175,9 +182,15 @@ public class EchoServer extends AbstractServer
 				e.printStackTrace();
 			}
 		  }	else {
+			  
 			  if(removeBlockedUser(client, unblock)){
 				  try {
+					  	
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
+						ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
+						client.sendToClient(copy);
+						//client.sendToClient(client.getInfo("blocklist"));
+
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -200,6 +213,7 @@ public class EchoServer extends AbstractServer
 		  }
 	  }
   }
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void whoBlocksMe(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
@@ -212,6 +226,7 @@ public class EchoServer extends AbstractServer
 		}
 	  }  
   }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void whoIBlock(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
@@ -231,12 +246,16 @@ public class EchoServer extends AbstractServer
 		}
 	  } 
   }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void status(Object msg, ConnectionToClient client){
 	  String [] parmes = ((String) msg).split(" ");
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
 	  String status;
+	  if (parmes[1] == null){
+		  return;
+	  }
 	  if((boolean)client.getInfo("availability") == false){
 		  status = "User " + parmes[1] + " is unavailable.";
 		 
@@ -250,29 +269,44 @@ public class EchoServer extends AbstractServer
 	  
 	  try{ client.sendToClient(status);}catch(Exception e){};
   }
-  public void handleMessageFromClient
-  (Object msg, ConnectionToClient client)
-{
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  public void handleMessageFromClient(Object msg, ConnectionToClient client)
+{	
 	  String[] temp = ((String)msg).split(" ");
 	  if(((String)msg).charAt(0) == '#'){
+		  
 		  switch (temp[0]){
 		  		case "#block":		block(msg, client);
 		  							break;
+		  							
 		  		case "#unblock":	unblock(msg,client);
 		  							break;
+		  							
 		  		case "#whoblocksme":whoBlocksMe(client);
 		  							break;
+		  							
 		  		case "#whoiblock":  whoIBlock(client);
 		  							break;
-		  		case "#login":	login(msg,client);
-		  						break;
-		  		case "#idle":	client.setInfo("idle", true );
-		  						break;
-		  		case "#available": client.setInfo("availability", true);
-		  						break;
+		  							
+		  		case "#login":		login(msg,client);
+		  							break;
+		  							
+		  		case "#idle":		client.setInfo("idle", true );
+		  							break;
+		  							
+		  		case "#available": 	client.setInfo("availability", true);
+		  							break;
+		  							
 		  		case "#notavailable": client.setInfo("availability", false);
+
+		  							break;
+		  							
+		  		case "#status": 	status(msg,client);
+
 		  						break;
 		  		case "#private":	sendToClient(msg, client);
+
 		  							break;
 		  }
 		  
@@ -303,6 +337,7 @@ public class EchoServer extends AbstractServer
 		  }
 	  }
   } 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**Method that returns an ArrayList containing names of all the
    * other users who are blocking the current client.
@@ -324,6 +359,7 @@ public class EchoServer extends AbstractServer
 	}
 	return blocklist;
   }
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**Method that returns an arraylist containing the users
    * who are blocked from the current client
@@ -336,6 +372,7 @@ public class EchoServer extends AbstractServer
 	  blocklist = (ArrayList<String>) client.getInfo(block);
 	  return blocklist;
   }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected boolean addBlockedUser(ConnectionToClient client, String blockee){
 	  try{
@@ -345,26 +382,6 @@ public class EchoServer extends AbstractServer
 		  temp.add(blockee);
 		  System.out.println("added: "+temp);
 		  client.setInfo(block, temp);
-		  client.sendToClient(temp);
-		  return true;
-	  }
-	  catch(Exception e){
-		  return false;
-	  }
-  }
-  
-  protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
-	  String block = "blocklist";
-	  try{
-		  ArrayList<String> temp = new ArrayList<String>();
-		  temp = (ArrayList<String>)client.getInfo(block);
-		  int index = temp.indexOf(unblockee);
-		  System.out.println("Before: "+temp);
-		  System.out.println(client.getInfo(block));
-		  temp.remove(unblockee);
-		  System.out.println("After: "+temp);
-		  client.setInfo(block, temp);
-		  System.out.println(client.getInfo(block));
 		  
 		  return true;
 	  }
@@ -372,17 +389,39 @@ public class EchoServer extends AbstractServer
 		  return false;
 	  }
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
+	  String block = "blocklist";
+	  try{
+
+		  ArrayList<String> temp = new ArrayList<String>();
+ 		  temp = (ArrayList<String>)client.getInfo(block);
+ 		  int index = temp.indexOf(unblockee);
+ 		  temp.remove(index);
+ 		  client.setInfo(block, temp);
+ 		  System.out.println("temp: "+ temp);
+		  
+		  return true;
+	  }
+	  catch(Exception e){
+		  return false;
+	  }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method overrides the one in the superclass.  Called
    * when the server starts listening for connections.
    */
+  
   protected void serverStarted()
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
      
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method overrides the one in the superclass.  Called
@@ -393,7 +432,8 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server has stopped listening for connections.");
   }
-  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
   protected void clientConnected(ConnectionToClient client) {
 	  String id = "id";
 	  String block = "blocklist";
@@ -403,21 +443,26 @@ public class EchoServer extends AbstractServer
 	  client.setInfo(block, blocklist);
 	  System.out.println(client + " has connected.");
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   synchronized protected void clientDisconnected(ConnectionToClient client) {
 	  System.out.println(client + " has been disconnected.");
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
+	  
 	  String id = "id";
+	  LoggedInUsers.remove(client.getInfo(id));
 	  System.out.println(client.getInfo(id) + " has disconnected due to: " + exception);
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected void listeningException(Throwable exception) {
 	  System.out.println(exception);
   }
   
-  //Class methods ***************************************************
+  //Class methods ***************************************************///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method is responsible for the creation of 
