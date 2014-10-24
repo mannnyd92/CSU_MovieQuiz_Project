@@ -44,7 +44,7 @@ public class EchoServer extends AbstractServer
   }
 
   
-  //Instance methods ************************************************
+  //Instance methods //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   /**
    * This method handles any messages received from the client.
@@ -130,6 +130,7 @@ public class EchoServer extends AbstractServer
 		}
 	  
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void block(Object msg, ConnectionToClient client){
 	  String[] temp = ((String)msg).split(" ");
@@ -161,6 +162,7 @@ public class EchoServer extends AbstractServer
 		  }
 	  }
   }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void unblock(Object msg, ConnectionToClient client){
 	
@@ -175,10 +177,13 @@ public class EchoServer extends AbstractServer
 				e.printStackTrace();
 			}
 		  }	else {
+			  System.out.println("Before: " + client.getInfo("blocklist"));
 			  if(removeBlockedUser(client, unblock)){
 				  try {
+					  	System.out.println("After: " + client.getInfo("blocklist"));
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
-						client.sendToClient(client.getInfo("blocklist"));
+						
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -201,6 +206,7 @@ public class EchoServer extends AbstractServer
 		  }
 	  }
   }
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void whoBlocksMe(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
@@ -213,6 +219,7 @@ public class EchoServer extends AbstractServer
 		}
 	  }  
   }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void whoIBlock(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
@@ -232,6 +239,7 @@ public class EchoServer extends AbstractServer
 		}
 	  } 
   }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void status(Object msg, ConnectionToClient client){
 	  String [] parmes = ((String) msg).split(" ");
@@ -254,11 +262,13 @@ public class EchoServer extends AbstractServer
 	  
 	  try{ client.sendToClient(status);}catch(Exception e){};
   }
-  public void handleMessageFromClient
-  (Object msg, ConnectionToClient client)
-{
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  public void handleMessageFromClient(Object msg, ConnectionToClient client)
+{	
 	  String[] temp = ((String)msg).split(" ");
 	  if(((String)msg).charAt(0) == '#'){
+		  
 		  switch (temp[0]){
 		  		case "#block":		block(msg, client);
 		  							break;
@@ -282,14 +292,14 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  							
 		  		case "#notavailable": client.setInfo("availability", false);
-<<<<<<< HEAD
+
 		  							break;
 		  							
 		  		case "#status": 	status(msg,client);
-=======
+
 		  						break;
 		  		case "#private":	sendToClient(msg, client);
->>>>>>> 8cc3e299ad2fe0bebaca2fd63f8916fd040c534b
+
 		  							break;
 		  }
 		  
@@ -372,11 +382,14 @@ public class EchoServer extends AbstractServer
   protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
 	  String block = "blocklist";
 	  try{
+		  System.out.println("fuck");
 		  ArrayList<String> temp = new ArrayList<String>();
 		  temp = (ArrayList<String>)client.getInfo(block);
 		  int index = temp.indexOf(unblockee);
 		  temp.remove(index);
 		  client.setInfo(block, temp);
+		  System.out.println("temp: "+ temp);
+		  client.sendToClient(temp);
 		  return true;
 	  }
 	  catch(Exception e){
@@ -420,7 +433,9 @@ public class EchoServer extends AbstractServer
   }
   
   synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
+	  
 	  String id = "id";
+	  LoggedInUsers.remove(client.getInfo(id));
 	  System.out.println(client.getInfo(id) + " has disconnected due to: " + exception);
   }
   

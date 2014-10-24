@@ -3,6 +3,7 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+
 import client.*;
 import common.*;
 
@@ -66,10 +67,10 @@ public class ClientConsole implements ChatIF
   {
     try
     {
-      BufferedReader fromConsole = 
-        new BufferedReader(new InputStreamReader(System.in));
-      String message;
-
+    	System.out.println("try");
+    	BufferedReader fromConsole = new BufferedReader(new InputStreamReader(System.in));
+    	String message;
+      
       while (true) 
       {
         message = fromConsole.readLine();
@@ -78,6 +79,7 @@ public class ClientConsole implements ChatIF
     } 
     catch (Exception ex) 
     {
+    	System.out.println("here fool");
       System.out.println
         ("Unexpected error while reading from console!");
     }
