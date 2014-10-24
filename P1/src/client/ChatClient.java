@@ -77,8 +77,7 @@ public class ChatClient extends AbstractClient
 		if(msg instanceof ArrayList){
 			blockedList = ((ArrayList<String>) msg);
 			return;
-		}
-		else{
+		}else{
 			String userparse = "";
 			userparse = msg.toString();
 			userparse = userparse.substring(1, userparse.indexOf(">"));
@@ -233,6 +232,7 @@ public class ChatClient extends AbstractClient
 	  System.out.println("	#unblock #### 		Unblocks messages from user ####.");
 	  System.out.println("	#whoiblock 		Displays a list of users that you are blocking.");
 	  System.out.println("	#whoblocksme 		Displays a list of users that are blocking you.");
+	  System.out.println("	#quit			Exits the program.");
   }
   
  

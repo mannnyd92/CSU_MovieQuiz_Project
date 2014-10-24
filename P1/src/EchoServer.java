@@ -195,8 +195,7 @@ public class EchoServer extends AbstractServer
 						ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
 						client.sendToClient(copy);
 						//client.sendToClient(client.getInfo("blocklist"));
-						  
-						
+
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -305,14 +304,35 @@ public class EchoServer extends AbstractServer
 		  							break;
 		  							
 		  		case "#notavailable": client.setInfo("availability", false);
-
 		  							break;
 		  							
 		  		case "#status": 	status(msg,client);
-
-		  						break;
-		  		case "#private":	sendToClient(msg, client);
-
+		  							break;
+		  							
+		  		case "#private":	sendToClientPrivate(msg, client);
+		  							break;
+		  		//Chat command
+		  		case "#channel":	channelChat(msg, client);
+		  			
+		  							break;
+		  		//Creates the channel only, does not automatically join, unique list
+		  		case "#createchannel":	createChannel(msg, client);
+		  							
+		  							break;
+		  		//Joins the channel if it exists, error message if it doesnt exist
+		  		case "#joinchannel":	joinChannel(msg, client);
+		  			
+		  							break;
+		  		//Leaves the specified channel if they are in it
+		  		case "#leavechannel":	leaveChannel(msg, client);
+		  			
+		  							break;
+		  		//Produces a list of all current channels
+		  		case "#listchannel":	listChannels(msg, client);
+		  			
+		  							break;
+		  							
+		  		default:			System.out.println("Server handleMessageFromClient default case got hit.");
 		  							break;
 		  }
 		  
@@ -322,14 +342,44 @@ public class EchoServer extends AbstractServer
 	  }
 }   
   
-  public void logwrite(Object msg, ConnectionToClient client){
+private void listChannels(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void leaveChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void joinChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void createChannel(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+private void channelChat(Object msg, ConnectionToClient client) {
+	// TODO Auto-generated method stub
+	
+}
+
+
+public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
 	  System.out.println("Message received: " + msg + " from " + client);
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
   
-  public void sendToClient(Object msg, ConnectionToClient client){
+  public void sendToClientPrivate(Object msg, ConnectionToClient client){
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
 	  String[] temp = ((String) msg).split(" ",3);
@@ -399,12 +449,12 @@ public class EchoServer extends AbstractServer
   protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){
 	  String block = "blocklist";
 	  try{
+
 		  ArrayList<String> temp = new ArrayList<String>();
-		  temp = (ArrayList<String>)client.getInfo(block);
-		  int index = temp.indexOf(unblockee);
-		  temp.remove(index);
-		  client.setInfo(block, temp);
-		  System.out.println("temp: "+ temp);
+ 		  temp = (ArrayList<String>)client.getInfo(block);
+ 		  int index = temp.indexOf(unblockee);
+ 		  temp.remove(index);
+ 		  client.setInfo(block, temp);
 		  
 		  return true;
 	  }
