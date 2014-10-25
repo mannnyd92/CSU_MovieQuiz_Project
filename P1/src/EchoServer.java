@@ -93,10 +93,12 @@ public class EchoServer extends AbstractServer
 					//checks for unique user name
 					if(!LoggedInUsers.contains(name)){
 						if(validUsers.contains(name)){
+							ArrayList<String> chan = new ArrayList<String>();
 							String id = "id";
 							client.setInfo(id, name);
 							client.setInfo("availability", true);
 							client.setInfo("idle", false);
+							client.setInfo("channels", chan);
 							LoggedInUsers.add(name);
 							logwrite(msg,client);
 							
@@ -290,32 +292,38 @@ public class EchoServer extends AbstractServer
 	  if(((String)msg).charAt(0) == '#'){
 		  
 		  switch (temp[0]){
-		  		case "#block":		block(msg, client);
-		  							break;
+		  		case "#block":			block(msg, client);
+		  								break;
 		  							
-		  		case "#unblock":	unblock(msg,client);
-		  							break;
+		  		case "#unblock":		unblock(msg,client);
+		  								break;
 		  							
-		  		case "#whoblocksme":whoBlocksMe(client);
-		  							break;
+		  		case "#whoblocksme":	whoBlocksMe(client);
+		  								break;
 		  							
-		  		case "#whoiblock":  whoIBlock(client);
-		  							break;
+		  		case "#whoiblock": 		whoIBlock(client);
+		  								break;
 		  							
-		  		case "#login":		login(msg,client);
-		  							break;
+		  		case "#login":			login(msg,client);
+		  								break;
 		  							
-		  		case "#idle":		client.setInfo("idle", true );
-		  							break;
+		  		case "#idle":			client.setInfo("idle", true );
+		  								break;
 		  							
-		  		case "#available": 	client.setInfo("availability", true);
-		  							break;
+		  		case "#available": 		client.setInfo("availability", true);
+		  								try{
+		  									client.sendToClient("You are now Available");
+		  								}catch(Exception e){}
+		  								break;
 		  							
-		  		case "#notavailable": client.setInfo("availability", false);
-		  							break;
+		  		case "#notavailable":	client.setInfo("availability", false);
+		  								try{
+		  									client.sendToClient("You are now Unavailable");
+		  								}catch(Exception e){}
+		  								break;
 		  							
-		  		case "#status": 	status(msg,client);
-		  							break;
+		  		case "#status": 		status(msg,client);
+		  								break;
 		  							
 		  		case "#private":	sendToClientPrivate(msg, client);
 		  							break;
@@ -339,8 +347,8 @@ public class EchoServer extends AbstractServer
 		  		case "#listchannel":	listChannels(msg, client);
 		  							break;
 		  							
-		  		default:			System.out.println("Server handleMessageFromClient default case got hit.");
-		  							break;
+		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
+		  								break;
 		  }
 		  
 	  }else{
@@ -353,9 +361,9 @@ public class EchoServer extends AbstractServer
 //Produces a list of all current channels
 private void listChannels(Object msg, ConnectionToClient client) {
 	try {
-		ArrayList<String> temp = new ArrayList<String>();
-		temp = channelList;
-		client.sendToClient(temp);
+		for(int i = 0; i < channelList.size(); i++){	
+			client.sendToClient(channelList.get(i));
+		}
 	} catch (IOException e) {
 		System.out.println("Cannot send channel list.");
 		e.printStackTrace();
@@ -368,22 +376,24 @@ private void leaveChannel(Object msg, ConnectionToClient client) {
 	String [] message = ((String) msg).split(" ");
 	String chan = message[1];
 	String channels = "channels";
-	ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels);
-	if(!holder.contains(chan)){
-		try {
-			client.sendToClient("Cannot leave channels that you are not in.");
-		} catch (IOException e) {
-			e.printStackTrace();
+	if(!client.getInfo(channels).equals(null)){
+		ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels);
+		if(!holder.contains(chan)){
+			try {
+				client.sendToClient("Cannot leave channels that you are not in.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
 		}
-		return;
-	}
-	if(holder.contains(chan)){
-		holder.remove(chan);
-		client.setInfo(channels, holder);
-		try {
-			client.sendToClient("You have left channel: " + "chan");
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(holder.contains(chan)){
+			holder.remove(chan);
+			client.setInfo(channels, holder);
+			try {
+				client.sendToClient("You have left channel: " + chan);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -421,6 +431,7 @@ private void joinChannel(Object msg, ConnectionToClient client) {
 		client.setInfo(channels, holder);
 		try {
 			client.sendToClient("You have joined channel: " + chan);
+			System.out.println(holder);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -443,7 +454,7 @@ private void createChannel(Object msg, ConnectionToClient client) {
 	else{
 		channelList.add(channel);
 		try {
-			client.sendToClient(message + " - channel has been created.");
+			client.sendToClient(channel + " - channel has been created.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -453,6 +464,7 @@ private void createChannel(Object msg, ConnectionToClient client) {
 
 //Chat command
 private void channelChat(Object msg, ConnectionToClient client) {
+	//TODO Add a check to make sure a client cant post in a channel they do not belong to
 	Thread[] clientThreadList = getClientConnections();
 	String [] message = ((String) msg).split(" ",3);
 	String chan = message[1];
@@ -464,7 +476,7 @@ private void channelChat(Object msg, ConnectionToClient client) {
 		chanlist = (ArrayList<String>)ctc.getInfo(channels);
 		if(chanlist.contains(chan)){
 			try{
-				ctc.sendToClient("<"+chan+"> <"+client.getInfo("id")+">"+message[2]);
+				ctc.sendToClient("["+chan+"] <"+client.getInfo("id")+"> "+message[2]);
 			}catch (Exception e) {}
 		}
 	}
@@ -476,9 +488,25 @@ public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
 	  System.out.println("Message received: " + msg + " from " + client);
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
-	  this.sendToAllClients(message);
+	  this.sendToAllClients(message, client);
   }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+public void sendToAllClients(Object msg, ConnectionToClient client){
+  Thread[] clientThreadList = getClientConnections();
+  ConnectionToClient cl;
+  for (int i=0; i<clientThreadList.length; i++){
+	  cl = (ConnectionToClient)clientThreadList[i];
+    try{
+    	if(cl.getInfo("availability").equals(true)){
+    		((ConnectionToClient)clientThreadList[i]).sendToClient(msg);
+    	}
+    }catch (Exception ex) {}
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
   public void sendToClientPrivate(Object msg, ConnectionToClient client){
 	  Thread[] clientThreadList = getClientConnections();
@@ -488,8 +516,12 @@ public void logwrite(Object msg, ConnectionToClient client){
 		  cl = (ConnectionToClient)clientThreadList[i];
 		  if(cl.getInfo("id").toString().equals(temp[1])){
 		  		try{
-		  			((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
-		  			((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			if(cl.getInfo("availability").equals(true)){
+		  				((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  				((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			}else{
+		  				((ConnectionToClient)client).sendToClient("<"+temp[1]+"> is currently unavailable!");
+		  			}
 		  		}catch (Exception ex) {}
 		  }
 	  }
