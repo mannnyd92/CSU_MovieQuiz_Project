@@ -289,58 +289,64 @@ public class EchoServer extends AbstractServer
 	  if(((String)msg).charAt(0) == '#'){
 		  
 		  switch (temp[0]){
-		  		case "#block":		block(msg, client);
-		  							break;
+		  		case "#block":			block(msg, client);
+		  								break;
 		  							
-		  		case "#unblock":	unblock(msg,client);
-		  							break;
+		  		case "#unblock":		unblock(msg,client);
+		  								break;
 		  							
-		  		case "#whoblocksme":whoBlocksMe(client);
-		  							break;
+		  		case "#whoblocksme":	whoBlocksMe(client);
+		  								break;
 		  							
-		  		case "#whoiblock":  whoIBlock(client);
-		  							break;
+		  		case "#whoiblock": 		whoIBlock(client);
+		  								break;
 		  							
-		  		case "#login":		login(msg,client);
-		  							break;
+		  		case "#login":			login(msg,client);
+		  								break;
 		  							
-		  		case "#idle":		client.setInfo("idle", true );
-		  							break;
+		  		case "#idle":			client.setInfo("idle", true );
+		  								break;
 		  							
-		  		case "#available": 	client.setInfo("availability", true);
-		  							break;
+		  		case "#available": 		client.setInfo("availability", true);
+		  								try{
+		  									client.sendToClient("You are now Available");
+		  								}catch(Exception e){}
+		  								break;
 		  							
-		  		case "#notavailable": client.setInfo("availability", false);
-		  							break;
+		  		case "#notavailable":	client.setInfo("availability", false);
+		  								try{
+		  									client.sendToClient("You are now Unavailable");
+		  								}catch(Exception e){}
+		  								break;
 		  							
-		  		case "#status": 	status(msg,client);
-		  							break;
+		  		case "#status": 		status(msg,client);
+		  								break;
 		  							
-		  		case "#private":	sendToClientPrivate(msg, client);
-		  							break;
+		  		case "#private":		sendToClientPrivate(msg, client);
+		  								break;
 		  		//Chat command
-		  		case "#channel":	channelChat(msg, client);
+		  		case "#channel":		channelChat(msg, client);
 		  			
-		  							break;
+		  								break;
 		  		//Creates the channel only, does not automatically join, unique list
 		  		case "#createchannel":	createChannel(msg, client);
 		  							
-		  							break;
+		  								break;
 		  		//Joins the channel if it exists, error message if it doesnt exist
 		  		case "#joinchannel":	joinChannel(msg, client);
 		  			
-		  							break;
+		  								break;
 		  		//Leaves the specified channel if they are in it
 		  		case "#leavechannel":	leaveChannel(msg, client);
 		  			
-		  							break;
+		  								break;
 		  		//Produces a list of all current channels
 		  		case "#listchannel":	listChannels(msg, client);
 		  			
-		  							break;
+		  								break;
 		  							
-		  		default:			System.out.println("Server handleMessageFromClient default case got hit.");
-		  							break;
+		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
+		  								break;
 		  }
 		  
 	  }else{
@@ -377,7 +383,7 @@ private void channelChat(Object msg, ConnectionToClient client) {
 	// TODO Auto-generated method stub
 	
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
@@ -385,7 +391,8 @@ public void logwrite(Object msg, ConnectionToClient client){
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
-  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
   public void sendToClientPrivate(Object msg, ConnectionToClient client){
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
