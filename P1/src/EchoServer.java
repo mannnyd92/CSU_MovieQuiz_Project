@@ -64,7 +64,6 @@ public class EchoServer extends AbstractServer
 		
 		try{
 			if(login.substring(0, 6).equals(log)){
-				System.out.println(templog[1]);
 				if(!templog[1].equals("<server>")){
 					logbool = true;
 				}else{
@@ -400,8 +399,11 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
   for (int i=0; i<clientThreadList.length; i++){
 	  cl = (ConnectionToClient)clientThreadList[i];
     try{
-    	if(cl.getInfo("availability").equals(true)){
+    	if(cl.getInfo("availability").equals(true) && client.getInfo("availability").equals(true)){
     		((ConnectionToClient)clientThreadList[i]).sendToClient(msg);
+    	}
+    	if(client.getInfo("availability").equals(false)){
+    		client.sendToClient("Your status is currently unavailable. Only the server will be able to view your message.");
     	}
     }catch (Exception ex) {}
   }
