@@ -260,26 +260,32 @@ public class EchoServer extends AbstractServer
 	  String status;
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
-	  for (int i=0; i<clientThreadList.length; i++){
-		  cl = (ConnectionToClient)clientThreadList[i];
-		  if(cl.getInfo("id").toString().equals(parmes[1])){
-			  
-			  if (parmes[1] == null){
-				  return;
+	  if(!validUsers.contains(parmes[1])){
+		  try{
+			  client.sendToClient("Not a valid username");
+		  }catch(Exception e){}
+	  }else if(!LoggedInUsers.contains(parmes[1])){
+		  try{client.sendToClient("User " + parmes[1] + " is offline.");}
+		  catch(Exception e){}
+	  }else{
+		  for (int i=0; i<clientThreadList.length; i++){
+			  cl = (ConnectionToClient)clientThreadList[i];
+			  if(cl.getInfo("id").toString().equals(parmes[1])){
+				  if (parmes[1] == null){return;}
+				  if((boolean)cl.getInfo("availability") == false){
+					  status = "User " + parmes[1] + " is unavailable."; 
+				  }else if((boolean)cl.getInfo("idle")){
+					  status = "User " + parmes[1] + " is idle.";
+				  }else if((boolean)cl.getInfo("connected")){
+					  status = "User " + parmes[1] + " is online.";
+				  }else if(!(boolean)cl.getInfo("connected") || client.getInfo("connected") == null ){
+					  status = "User " + parmes[1] + " is offline.";
+				  }else{status = "User " + parmes[1] + "'s status not found.";}
+				  
+				  try{ client.sendToClient(status);}catch(Exception e){};
 			  }
-			  if((boolean)cl.getInfo("availability") == false){
-				  status = "User " + parmes[1] + " is unavailable."; 
-			  }else if((boolean)cl.getInfo("idle")){
-				  status = "User " + parmes[1] + " is idle.";
-			  }else if((boolean)cl.getInfo("connected")){
-				  status = "User " + parmes[1] + " is online.";
-			  }else if(!(boolean)cl.getInfo("connected") || client.getInfo("connected") == null ){
-				  status = "User " + parmes[1] + " is offline.";
-			  }else{status = "User " + parmes[1] + "'s status not found.";}
-			  
-			  try{ client.sendToClient(status);}catch(Exception e){};
 		  }
-	}
+	  }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
