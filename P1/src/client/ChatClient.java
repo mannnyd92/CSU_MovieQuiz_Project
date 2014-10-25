@@ -265,7 +265,7 @@ public class ChatClient extends AbstractClient
   public void send(String message){
 	  try
 	    {
-	    
+		  
 	      sendToServer(message);
 	      try{
 	    	  timer.cancel();
