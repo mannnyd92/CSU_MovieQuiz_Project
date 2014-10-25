@@ -389,8 +389,24 @@ public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
 	  System.out.println("Message received: " + msg + " from " + client);
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
-	  this.sendToAllClients(message);
+	  this.sendToAllClients(message, client);
   }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+public void sendToAllClients(Object msg, ConnectionToClient client){
+  Thread[] clientThreadList = getClientConnections();
+  ConnectionToClient cl;
+  for (int i=0; i<clientThreadList.length; i++){
+	  cl = (ConnectionToClient)clientThreadList[i];
+    try{
+    	if(cl.getInfo("availability").equals(true)){
+    		((ConnectionToClient)clientThreadList[i]).sendToClient(msg);
+    	}
+    }catch (Exception ex) {}
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
   public void sendToClientPrivate(Object msg, ConnectionToClient client){
@@ -401,8 +417,12 @@ public void logwrite(Object msg, ConnectionToClient client){
 		  cl = (ConnectionToClient)clientThreadList[i];
 		  if(cl.getInfo("id").toString().equals(temp[1])){
 		  		try{
-		  			((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
-		  			((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			if(cl.getInfo("availability").equals(true)){
+		  				((ConnectionToClient)clientThreadList[i]).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  				((ConnectionToClient)client).sendToClient("<"+client.getInfo("id").toString()+"> (PRIVATE) "+temp[2]);
+		  			}else{
+		  				((ConnectionToClient)client).sendToClient("<"+temp[1]+"> is currently unavailable!");
+		  			}
 		  		}catch (Exception ex) {}
 		  }
 	  }
