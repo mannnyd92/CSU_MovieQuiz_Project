@@ -258,21 +258,28 @@ public class EchoServer extends AbstractServer
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
 	  String status;
-	  if (parmes[1] == null){
-		  return;
-	  }
-	  if((boolean)client.getInfo("availability") == false){
-		  status = "User " + parmes[1] + " is unavailable.";
-		 
-	  }else if((boolean)client.getInfo("idle")){
-		  status = "User " + parmes[1] + " is idle.";
-	  }else if((boolean)client.getInfo("connected")){
-		  status = "User " + parmes[1] + " is online.";
-	  }else if(!(boolean)client.getInfo("connected") || client.getInfo("connected") == null ){
-		  status = "User " + parmes[1] + " is offline.";
-	  }else{status = "User " + parmes[1] + "'s status not found.";}
-	  
-	  try{ client.sendToClient(status);}catch(Exception e){};
+	  Thread[] clientThreadList = getClientConnections();
+	  ConnectionToClient cl;
+	  for (int i=0; i<clientThreadList.length; i++){
+		  cl = (ConnectionToClient)clientThreadList[i];
+		  if(cl.getInfo("id").toString().equals(parmes[1])){
+			  
+			  if (parmes[1] == null){
+				  return;
+			  }
+			  if((boolean)cl.getInfo("availability") == false){
+				  status = "User " + parmes[1] + " is unavailable."; 
+			  }else if((boolean)cl.getInfo("idle")){
+				  status = "User " + parmes[1] + " is idle.";
+			  }else if((boolean)cl.getInfo("connected")){
+				  status = "User " + parmes[1] + " is online.";
+			  }else if(!(boolean)cl.getInfo("connected") || client.getInfo("connected") == null ){
+				  status = "User " + parmes[1] + " is offline.";
+			  }else{status = "User " + parmes[1] + "'s status not found.";}
+			  
+			  try{ client.sendToClient(status);}catch(Exception e){};
+		  }
+	}
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
