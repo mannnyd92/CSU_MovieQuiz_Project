@@ -31,6 +31,7 @@ public class EchoServer extends AbstractServer
   
   protected static ArrayList<String> validUsers = new ArrayList<String>();
   protected static ArrayList<String> LoggedInUsers = new ArrayList<String>();
+  protected static ArrayList<String> channelList = new ArrayList<String>(); 
   
   //Constructors ****************************************************
   
@@ -318,25 +319,24 @@ public class EchoServer extends AbstractServer
 		  							
 		  		case "#private":	sendToClientPrivate(msg, client);
 		  							break;
-		  		//Chat command
+
 		  		case "#channel":	channelChat(msg, client);
 		  			
 		  							break;
-		  		//Creates the channel only, does not automatically join, unique list
+
 		  		case "#createchannel":	createChannel(msg, client);
 		  							
 		  							break;
-		  		//Joins the channel if it exists, error message if it doesnt exist
+
 		  		case "#joinchannel":	joinChannel(msg, client);
 		  			
 		  							break;
-		  		//Leaves the specified channel if they are in it
+
 		  		case "#leavechannel":	leaveChannel(msg, client);
 		  			
 		  							break;
-		  		//Produces a list of all current channels
+
 		  		case "#listchannel":	listChannels(msg, client);
-		  			
 		  							break;
 		  							
 		  		default:			System.out.println("Server handleMessageFromClient default case got hit.");
@@ -348,36 +348,129 @@ public class EchoServer extends AbstractServer
 		  logwrite(msg,client);
 	  }
 }   
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
+//Produces a list of all current channels
 private void listChannels(Object msg, ConnectionToClient client) {
-	// TODO Auto-generated method stub
-	
+	try {
+		ArrayList<String> temp = new ArrayList<String>();
+		temp = channelList;
+		client.sendToClient(temp);
+	} catch (IOException e) {
+		System.out.println("Cannot send channel list.");
+		e.printStackTrace();
+	}
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//Leaves the specified channel if they are in it
 private void leaveChannel(Object msg, ConnectionToClient client) {
-	// TODO Auto-generated method stub
+	String [] message = ((String) msg).split(" ");
+	String chan = message[1];
+	String channels = "channels";
+	ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels);
+	if(!holder.contains(chan)){
+		try {
+			client.sendToClient("Cannot leave channels that you are not in.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
+	}
+	if(holder.contains(chan)){
+		holder.remove(chan);
+		client.setInfo(channels, holder);
+		try {
+			client.sendToClient("You have left channel: " + "chan");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//Joins the channel if it exists, error message if it doesnt exist
 private void joinChannel(Object msg, ConnectionToClient client) {
-	// TODO Auto-generated method stub
+	String [] message = ((String) msg).split(" ");
+	String chan = message[1];
+	String channels = "channels";
+	if(!channelList.contains(chan)){
+		try {
+			client.sendToClient("Channel: " + chan + " does not exist, use #help for more information.");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	if(client.getInfo(channels) == null){
+		ArrayList<String> temp = new ArrayList<String>();
+		temp.add(chan);
+		client.setInfo(channels, temp);
+		return;
+	}
+	ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels); 
+	if(holder.contains(chan)){
+		try {
+			client.sendToClient("You are already in channel: " + chan);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}else{
+		holder.add(chan);
+		client.setInfo(channels, holder);
+		try {
+			client.sendToClient("You have joined channel: " + chan);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//Creates the channel only, does not automatically join, unique list
 private void createChannel(Object msg, ConnectionToClient client) {
-	// TODO Auto-generated method stub
-	
+	String [] message = ((String) msg).split(" ");
+	String channel = message[1];
+	if(channelList.contains(channel)){
+		try {
+			client.sendToClient("Channel already exists");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	else{
+		channelList.add(channel);
+		try {
+			client.sendToClient(message + " - channel has been created.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//Chat command
 private void channelChat(Object msg, ConnectionToClient client) {
-	// TODO Auto-generated method stub
+	Thread[] clientThreadList = getClientConnections();
+	String [] message = ((String) msg).split(" ",3);
+	String chan = message[1];
+	String channels = "channels";
+	ConnectionToClient ctc;
+	ArrayList<String> chanlist = new ArrayList<String>();
+	for (int i = 0; i< clientThreadList.length; i++){
+		ctc = (ConnectionToClient)clientThreadList[i];
+		chanlist = (ArrayList<String>)ctc.getInfo(channels);
+		if(chanlist.contains(chan)){
+			try{
+				ctc.sendToClient("<"+chan+"> <"+client.getInfo("id")+">"+message[2]);
+			}catch (Exception e) {}
+		}
+	}
 	
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public void logwrite(Object msg, ConnectionToClient client){
 	  String id = "id";
@@ -385,7 +478,8 @@ public void logwrite(Object msg, ConnectionToClient client){
 	  String message = "<" + client.getInfo(id).toString() + "> " + msg;
 	  this.sendToAllClients(message);
   }
-  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+
   public void sendToClientPrivate(Object msg, ConnectionToClient client){
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
