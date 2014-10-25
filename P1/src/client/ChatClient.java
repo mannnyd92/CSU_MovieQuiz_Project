@@ -202,6 +202,21 @@ public class ChatClient extends AbstractClient
 			case "status":			send(message);
 									break;
 									
+			case "channel":			send(message);
+									break;
+									
+			case "createchannel":	send(message);
+									break;
+									
+			case "joinchannel":		send(message);
+									break;
+									
+			case "leavechannel":	send(message);
+									break;
+									
+			case "listchannel":		send(message);
+									break;
+									
 			default:		System.out.println("# Requires formatting, use #help command for more info");
 			
 		}
@@ -223,16 +238,25 @@ public class ChatClient extends AbstractClient
 	  System.out.println("");
 	  System.out.println("	#login 			Logs user into the server.");
 	  System.out.println("	#logoff 		Logs user off of the server.");
-	  System.out.println("	#changelogin #### 	Changes username to ####. Must logoff and login for change to take effect.");
+	  System.out.println("	#changelogin <NewUserName> 	Changes login, Must logoff and login for change to take effect.");
 	  System.out.println("	#gethost 		Displays the host.");
 	  System.out.println("	#getport 		Displays the port number.");
-	  System.out.println("	#sethost #### 		Changes the host to ####. Must be logged off.");
-	  System.out.println("	#setport #### 		Changes the port number to ####. Must be logged off.");
-	  System.out.println("	#block #### 		Blocks messages from user ####.");
-	  System.out.println("	#unblock #### 		Unblocks messages from user ####.");
+	  System.out.println("	#sethost <host> 		Changes the host. Must be logged off.");
+	  System.out.println("	#setport <port#> 		Changes the port. Must be logged off.");
+	  System.out.println("	#block <user> 		Blocks messages from user.");
+	  System.out.println("	#unblock <user> 		Unblocks messages from user.");
 	  System.out.println("	#whoiblock 		Displays a list of users that you are blocking.");
 	  System.out.println("	#whoblocksme 		Displays a list of users that are blocking you.");
+	  System.out.println("	#status <user>			Returns the status of a user or a channel.");
+	  System.out.println("	#notavailable			Sets your status to unavailable.");
+	  System.out.println("	#available			Sets your status to available.");
+	  System.out.println("	#private  <user> <message>	Sends a message to user specified ONLY!.");
+	  System.out.println("	#channel  <user> <message>	Returns the status of a user or a channel.");
+	  
+	  
+	  
 	  System.out.println("	#quit			Exits the program.");
+	  
   }
   
  
