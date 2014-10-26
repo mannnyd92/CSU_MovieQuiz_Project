@@ -98,6 +98,8 @@ public class EchoServer extends AbstractServer
 							client.setInfo("availability", true);
 							client.setInfo("idle", false);
 							client.setInfo("channels", chan);
+							client.setInfo("whomonitorsme", "");
+							client.setInfo("whoimonitor", "");
 							LoggedInUsers.add(name);
 							logwrite(msg,client);
 							
@@ -512,6 +514,17 @@ private void channelChat(Object msg, ConnectionToClient client) {
 		if(chanlist.contains(chan)){
 			try{
 				ctc.sendToClient("["+chan+"] <"+client.getInfo("id")+"> "+message[2]);
+				if(!ctc.getInfo("whomonitorsme").equals("")){
+	    			ConnectionToClient clnew;
+	    			for(int j = 0; j < clientThreadList.length; j++){
+	    				clnew = (ConnectionToClient)clientThreadList[j];
+	    				if (!clnew.getInfo("whoimonitor").equals("")){
+	    					if(clnew.getInfo("whoimonitor").equals(client.getInfo("id"))){
+	    						clnew.sendToClient("(FORWARD) ["+chan+"] <"+client.getInfo("id")+">" + message[2]);
+	    					}
+	    				}
+	    			}  
+				}
 			}catch (Exception e) {}
 		}
 	}
@@ -535,6 +548,17 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
 	  cl = (ConnectionToClient)clientThreadList[i];
     try{
     	if(cl.getInfo("availability").equals(true) && client.getInfo("availability").equals(true)){
+    		if(!cl.getInfo("whomonitorsme").equals("")){
+    			ConnectionToClient clnew;
+    			for(int j = 0; j < clientThreadList.length; j++){
+    				clnew = (ConnectionToClient)clientThreadList[j];
+    				if (!clnew.getInfo("whoimonitor").equals("")){
+    					if(clnew.getInfo("whoimonitor").equals(client.getInfo("id"))){
+    						clnew.sendToClient("(FORWARD) <"+client.getInfo("id")+">" + msg);
+    					}
+    				}
+    			}    			
+    		}
     		((ConnectionToClient)clientThreadList[i]).sendToClient(msg);
     	}
     	if(client.getInfo("availability").equals(false)){
