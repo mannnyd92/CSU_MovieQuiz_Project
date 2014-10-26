@@ -257,12 +257,36 @@ public class EchoServer extends AbstractServer
   
   public void status(Object msg, ConnectionToClient client){
 	  String [] parmes = ((String) msg).split(" ");
+	  
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
 	  String status;
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
-	  if(!validUsers.contains(parmes[1])){
+	  if(channelList.contains(parmes[1])){
+		  String chanName = parmes[1];
+		  String chanListTag = "channels";
+		 
+		  for (int i = 0; i< clientThreadList.length; i++){
+			  cl = (ConnectionToClient)clientThreadList[i];
+			  ArrayList<String> chanList = new ArrayList<String>((ArrayList<String>)cl.getInfo(chanListTag));
+			  if(chanList.contains(chanName)){
+				  if (parmes[1] == null){return;}
+				  if((boolean)cl.getInfo("availability") == false){
+					  status = "User " + cl.getInfo("id") + " is unavailable."; 
+				  }else if((boolean)cl.getInfo("idle")){
+					  status = "User " + cl.getInfo("id")  + " is idle.";
+				  }else if((boolean)cl.getInfo("connected")){
+					  status = "User " + cl.getInfo("id") + " is online.";
+				  }else if(!(boolean)cl.getInfo("connected") || client.getInfo("connected") == null ){
+					  status = "User " + cl.getInfo("id")  + " is offline.";
+				  }else{status = "User " + cl.getInfo("id")  + "'s status not found.";}
+				  
+				  try{ client.sendToClient(status);}catch(Exception e){};
+			  }
+		  }
+	  }
+	  else if(!validUsers.contains(parmes[1])){
 		  try{
 			  client.sendToClient("Not a valid username");
 		  }catch(Exception e){}
@@ -290,7 +314,7 @@ public class EchoServer extends AbstractServer
 	  }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   public void handleMessageFromClient(Object msg, ConnectionToClient client)
 {	
 	  String[] temp = ((String)msg).split(" ");
