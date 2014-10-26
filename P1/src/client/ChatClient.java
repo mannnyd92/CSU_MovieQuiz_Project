@@ -251,11 +251,10 @@ public class ChatClient extends AbstractClient
 			case "listchannel":		if(mesarray.length < 2){
 										System.out.println(helpError);
 									}else{send(message);}
-			break;
-									
-<<<<<<< HEAD
-			default:		System.out.println(helpError);
-=======
+									break;
+
+
+
 			case "monitor":			if(mesarray.length<2){
 										System.out.println("#monitor must be followed by a parameter.");
 										break;
@@ -266,9 +265,9 @@ public class ChatClient extends AbstractClient
 			
 			case "accept":	send(message);
 									break;
-			
-			default:		System.out.println("# Requires formatting, use #help command for more info");
->>>>>>> 4950ebf87ec414c8d7e2a1cb3254e09b431e43f8
+									
+			default:		System.out.println(helpError);
+							break;
 			
 		}
 			  

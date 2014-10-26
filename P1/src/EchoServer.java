@@ -96,19 +96,6 @@ public class EchoServer extends AbstractServer
 					//checks for unique user name
 					if(!LoggedInUsers.contains(name)){
 						if(validUsers.contains(name)){
-<<<<<<< HEAD
-=======
-							ArrayList<String> chan = new ArrayList<String>();
-							String id = "id";
-							client.setInfo(id, name);
-							client.setInfo("availability", true);
-							client.setInfo("idle", false);
-							client.setInfo("channels", chan);
-							client.setInfo("whomonitorsme", "");
-							client.setInfo("whoimonitor", "");
-							LoggedInUsers.add(name);
-							logwrite(msg,client);
->>>>>>> 4950ebf87ec414c8d7e2a1cb3254e09b431e43f8
 							
 							if(pw.equals(pass.get(name))){
 								ArrayList<String> chan = new ArrayList<String>();
@@ -117,6 +104,8 @@ public class EchoServer extends AbstractServer
 								client.setInfo("availability", true);
 								client.setInfo("idle", false);
 								client.setInfo("channels", chan);
+								client.setInfo("whomonitorsme", "");
+								client.setInfo("whoimonitor", "");
 								LoggedInUsers.add(name);
 								String logmes = "has logged in!";
 								logwrite(logmes,client);
