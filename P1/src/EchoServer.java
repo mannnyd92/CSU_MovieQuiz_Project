@@ -582,7 +582,7 @@ private void channelChat(Object msg, ConnectionToClient client) {
 	    			for(int j = 0; j < clientThreadList.length; j++){
 	    				clnew = (ConnectionToClient)clientThreadList[j];
 	    				if (!clnew.getInfo("whoimonitor").equals("")){
-	    					if(clnew.getInfo("whoimonitor").equals(client.getInfo("id"))){
+	    					if(clnew.getInfo("whoimonitor").equals(ctc.getInfo("id"))){
 	    						clnew.sendToClient("(FORWARD) ["+chan+"] <"+client.getInfo("id")+">" + message[2]);
 	    					}
 	    				}
@@ -617,7 +617,7 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
     				clnew = (ConnectionToClient)clientThreadList[j];
     				if (!clnew.getInfo("whoimonitor").equals("")){
     					if(clnew.getInfo("whoimonitor").equals(client.getInfo("id"))){
-    						clnew.sendToClient("(FORWARD) <"+client.getInfo("id")+">" + msg);
+    						clnew.sendToClient("(FORWARD) " + msg);
     					}
     				}
     			}    			
