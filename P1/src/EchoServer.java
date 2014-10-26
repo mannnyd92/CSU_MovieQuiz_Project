@@ -149,7 +149,7 @@ public class EchoServer extends AbstractServer
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	  } else if(client.getInfo("id").equals(temp[1])){//TODO put in unique user check
+	  } else if(client.getInfo("id").equals(temp[1])){
 		  try {
 			client.sendToClient("You cannot block the sending of messages to yourself.");
 		} catch (IOException e) {
@@ -257,12 +257,36 @@ public class EchoServer extends AbstractServer
   
   public void status(Object msg, ConnectionToClient client){
 	  String [] parmes = ((String) msg).split(" ");
+	  
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
 	  String status;
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
-	  if(!validUsers.contains(parmes[1])){
+	  if(channelList.contains(parmes[1])){
+		  String chanName = parmes[1];
+		  String chanListTag = "channels";
+		 
+		  for (int i = 0; i< clientThreadList.length; i++){
+			  cl = (ConnectionToClient)clientThreadList[i];
+			  ArrayList<String> chanList = new ArrayList<String>((ArrayList<String>)cl.getInfo(chanListTag));
+			  if(chanList.contains(chanName)){
+				  if (parmes[1] == null){return;}
+				  if((boolean)cl.getInfo("availability") == false){
+					  status = "User " + cl.getInfo("id") + " is unavailable."; 
+				  }else if((boolean)cl.getInfo("idle")){
+					  status = "User " + cl.getInfo("id")  + " is idle.";
+				  }else if((boolean)cl.getInfo("connected")){
+					  status = "User " + cl.getInfo("id") + " is online.";
+				  }else if(!(boolean)cl.getInfo("connected") || client.getInfo("connected") == null ){
+					  status = "User " + cl.getInfo("id")  + " is offline.";
+				  }else{status = "User " + cl.getInfo("id")  + "'s status not found.";}
+				  
+				  try{ client.sendToClient(status);}catch(Exception e){};
+			  }
+		  }
+	  }
+	  else if(!validUsers.contains(parmes[1])){
 		  try{
 			  client.sendToClient("Not a valid username");
 		  }catch(Exception e){}
@@ -290,8 +314,10 @@ public class EchoServer extends AbstractServer
 	  }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
-  public void handleMessageFromClient(Object msg, ConnectionToClient client){	
+
+  public void handleMessageFromClient(Object msg, ConnectionToClient client)
+{	
+
 	  String[] temp = ((String)msg).split(" ");
 	  if(((String)msg).charAt(0) == '#'){
 		  
@@ -530,13 +556,19 @@ private void createChannel(Object msg, ConnectionToClient client) {
 
 //Chat command
 private void channelChat(Object msg, ConnectionToClient client) {
-	//TODO Add a check to make sure a client cant post in a channel they do not belong to
 	Thread[] clientThreadList = getClientConnections();
 	String [] message = ((String) msg).split(" ",3);
 	String chan = message[1];
 	String channels = "channels";
 	ConnectionToClient ctc;
 	ArrayList<String> chanlist = new ArrayList<String>();
+	ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels);
+	if(!holder.contains(chan)){
+		try{
+			client.sendToClient("Cannot post message in a channel you don't belong to.");
+			return;
+		}catch (Exception e) {}
+	}
 	for (int i = 0; i< clientThreadList.length; i++){
 		ctc = (ConnectionToClient)clientThreadList[i];
 		chanlist = (ArrayList<String>)ctc.getInfo(channels);
