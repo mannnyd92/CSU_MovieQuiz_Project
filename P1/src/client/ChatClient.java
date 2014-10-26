@@ -222,7 +222,10 @@ public class ChatClient extends AbstractClient
 										break;
 									}
 			
-			case "accept":	send(message);
+			case "accept":			send(message);
+									break;
+									
+			case "cancelmonitor":	send(message);
 									break;
 			
 			default:		System.out.println("# Requires formatting, use #help command for more info");

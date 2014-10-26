@@ -380,6 +380,9 @@ public class EchoServer extends AbstractServer
 		  								
 		  		case "#accept":			acceptMonitor(client);
 		  								break;
+		  								
+		  		case "#cancelmonitor":	cancelMonitor(client);
+		  								break;
 		  							
 		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
 		  								break;
@@ -398,32 +401,53 @@ public void monitor(Object msg, ConnectionToClient client){
 	String [] temp = ((String) msg).split(" ");
 	String monor = temp[1];
 	String monee = client.getInfo("id").toString();
-	
+	if(monor.equals("server")){
+		try {
+			client.sendToClient("You cannot monitor the server.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}else{
 	Thread[] clientThreadList = getClientConnections();
 	ConnectionToClient cltemp;
 	ConnectionToClient monitor = null;
 	ConnectionToClient monitoree = null;
 	
-	for (int i=0; i<clientThreadList.length; i++){
-		cltemp = (ConnectionToClient)clientThreadList[i];
-		if(cltemp.getInfo("id").toString().equals(monor)){
-			monitor = cltemp;
-		}
-		if(cltemp.getInfo("id").toString().equals(monee)){
-			monitoree = cltemp;
+	if(!monor.equals("server")){
+		for (int i=0; i<clientThreadList.length; i++){
+			cltemp = (ConnectionToClient)clientThreadList[i];
+			if(cltemp.getInfo("id").toString().equals(monor)){
+				monitor = cltemp;
+			}
+			if(cltemp.getInfo("id").toString().equals(monee)){
+				monitoree = cltemp;
+			}
 		}
 	}
 	
 	try {
-		monitor.sendToClient("<"+monee+"> wants you to monitor their messages! Type #accept to have their messages forwarded to you.");
-		monitoree.sendToClient("<"+monor+"> will have to confirm the forward.");
-		monee = "*"+monee;
-		monitor.setInfo("whoimonitor", monee);
-		monitoree.setInfo("whomonitorsme", monor);
-		} catch (IOException e) {
-				e.printStackTrace();
+		if(((ArrayList<String>) monitoree.getInfo("blocklist")).contains(monitor.getInfo("id").toString())){
+			monitoree.sendToClient("You have <"+monor+"> blocked. Please unblock to allow forwarding.");
+		}else if(((ArrayList<String>) monitor.getInfo("blocklist")).contains(monitoree.getInfo("id").toString())){
+			monitoree.sendToClient("<"+monor+"> has you blocked. Cannot forward messages.");
+		}else if(monor.equals(monee)){
+			monitoree.sendToClient("You cannot monitor yourself.");
+		}else if(monitoree.getInfo("whomonitorsme") != "" || monitoree.getInfo("whoimonitor") != ""){
+			monitoree.sendToClient("Monitoring already in use. Please #cancelmonitor to start another monitor.");
+		}else if(monitor.getInfo("whomonitorsme") != "" || monitor.getInfo("whoimonitor") != ""){
+			monitoree.sendToClient("<"+monor+"> has monitoring already in use. Please have them #cancelmonitor to start another monitor.");			
+		}else{
+			monitor.sendToClient("<"+monee+"> wants you to monitor their messages! Type #accept to have their messages forwarded to you.");
+			monitoree.sendToClient("<"+monor+"> will have to confirm the forward.");
+			monee = "*"+monee;
+			monitor.setInfo("whoimonitor", monee);
+			monitoree.setInfo("whomonitorsme", monor);
+			monitoree.setInfo("idle", true);
+		}
+	} catch (IOException e) {
+		e.printStackTrace();
 	}
-	
+	}
 }
   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -431,7 +455,6 @@ public void monitor(Object msg, ConnectionToClient client){
 public void acceptMonitor(ConnectionToClient client){
 	String update = "";
 	update = client.getInfo("whoimonitor").toString();
-	System.out.println(client.getInfo("whoimonitor").toString());
 	update = update.substring(1);
 	client.setInfo("whoimonitor", update);
 	
@@ -448,6 +471,56 @@ public void acceptMonitor(ConnectionToClient client){
 			}
 		}
 	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public void cancelMonitor(ConnectionToClient client){
+	String update = "";
+	ConnectionToClient monitor = null;
+	ConnectionToClient monitoree = null;
+	
+	if(!client.getInfo("whoimonitor").equals("")){
+		String name = client.getInfo("whoimonitor").toString();
+		client.setInfo("whoimonitor", update);
+		monitor = client;
+		Thread[] clientThreadList = getClientConnections();
+		ConnectionToClient cltemp;
+		for (int i=0; i<clientThreadList.length; i++){
+			cltemp = (ConnectionToClient) clientThreadList[i];
+			if(cltemp.getInfo("id").toString().equals(name)){
+				cltemp.setInfo("whomonitorsme", update);
+				monitoree = cltemp;
+			}
+		}
+		try {
+			monitor.sendToClient("Current monitoring has been cancelled.");
+			monitoree.sendToClient("Current monitoring has been cancelled.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	if(!client.getInfo("whomonitorsme").equals("")){
+		String name = client.getInfo("whomonitorsme").toString();
+		client.setInfo("whomonitorme", update);
+		monitor = client;
+		Thread[] clientThreadList = getClientConnections();
+		ConnectionToClient cltemp;
+		for (int i=0; i<clientThreadList.length; i++){
+			cltemp = (ConnectionToClient) clientThreadList[i];
+			if(cltemp.getInfo("id").toString().equals(name)){
+				cltemp.setInfo("whoimonitor", update);
+				monitoree = cltemp;
+			}
+		}
+		try {
+			monitor.sendToClient("Current monitoring has been cancelled.");
+			monitoree.sendToClient("Current monitoring has been cancelled.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,7 +656,7 @@ private void channelChat(Object msg, ConnectionToClient client) {
 	    				clnew = (ConnectionToClient)clientThreadList[j];
 	    				if (!clnew.getInfo("whoimonitor").equals("")){
 	    					if(clnew.getInfo("whoimonitor").equals(ctc.getInfo("id"))){
-	    						clnew.sendToClient("(FORWARD) ["+chan+"] <"+client.getInfo("id")+">" + message[2]);
+	    						clnew.sendToClient("(FORWARD) ["+chan+"] <"+client.getInfo("id")+"> " + message[2]);
 	    					}
 	    				}
 	    			}  
