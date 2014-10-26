@@ -1,6 +1,6 @@
-bob
-tim
-nobody
-server
-al
-jim
+bob	pass
+tim	pass
+nobody	pass
+server	pass
+al	pass
+jim	pass

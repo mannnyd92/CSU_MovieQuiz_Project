@@ -5,7 +5,9 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import ocsf.server.*;
@@ -32,6 +34,7 @@ public class EchoServer extends AbstractServer
   protected static ArrayList<String> validUsers = new ArrayList<String>();
   protected static ArrayList<String> LoggedInUsers = new ArrayList<String>();
   protected static ArrayList<String> channelList = new ArrayList<String>(); 
+  protected static Map pass = new HashMap();
   
   //Constructors ****************************************************
   
@@ -58,9 +61,10 @@ public class EchoServer extends AbstractServer
   
   public void login(Object msg, ConnectionToClient client){
 		String login = msg.toString();
-		 String[] templog = ((String)msg).split(" ");
+		String[] templog = ((String)msg).split(" ");
 		String log = "#login";
 		String connected = "connected";
+		String pw = templog [2];
 		boolean logbool = false;
 		
 		try{
@@ -88,21 +92,29 @@ public class EchoServer extends AbstractServer
 				}
 				else{
 					
-					String name = login.substring(8, login.length() - 1);
+					String name = templog[1];
 					//checks for unique user name
 					if(!LoggedInUsers.contains(name)){
 						if(validUsers.contains(name)){
-							ArrayList<String> chan = new ArrayList<String>();
-							String id = "id";
-							client.setInfo(id, name);
-							client.setInfo("availability", true);
-							client.setInfo("idle", false);
-							client.setInfo("channels", chan);
-							client.setInfo("whomonitorsme", "");
-							client.setInfo("whoimonitor", "");
-							LoggedInUsers.add(name);
-							logwrite(msg,client);
 							
+							if(pw.equals(pass.get(name))){
+								ArrayList<String> chan = new ArrayList<String>();
+								String id = "id";
+								client.setInfo(id, name);
+								client.setInfo("availability", true);
+								client.setInfo("idle", false);
+								client.setInfo("channels", chan);
+								client.setInfo("whomonitorsme", "");
+								client.setInfo("whoimonitor", "");
+								LoggedInUsers.add(name);
+								String logmes = "has logged in!";
+								logwrite(logmes,client);
+							}else{
+								try{
+								client.sendToClient("Incorrect Password, Try login again, See #help for more details!");
+								client.close();
+								}catch(Exception e){}
+							}
 						}
 						else{
 							try{
@@ -169,7 +181,6 @@ public class EchoServer extends AbstractServer
 				client.sendToClient("Messages from "+temp[1]+" will be blocked.");
 				ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
 				client.sendToClient(copy);
-				//client.sendToClient(client.getInfo("blocklist"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -198,7 +209,6 @@ public class EchoServer extends AbstractServer
 						client.sendToClient("Messages from "+temp[1]+" will now be displayed.");
 						ArrayList copy = new ArrayList((ArrayList<String>)client.getInfo("blocklist"));
 						client.sendToClient(copy);
-						//client.sendToClient(client.getInfo("blocklist"));
 
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -862,8 +872,11 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
     try{
     	String usernameFile = args[0];
     	Scanner s = new Scanner(new File(usernameFile));
+    	
     	while(s.hasNext()){
-    		validUsers.add(s.next());
+    		String user = s.next();
+    		validUsers.add(user);
+    		pass.put(user, s.next());
     	}
     	s.close();
     }
