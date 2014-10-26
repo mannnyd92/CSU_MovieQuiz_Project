@@ -149,7 +149,7 @@ public class EchoServer extends AbstractServer
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	  } else if(client.getInfo("id").equals(temp[1])){//TODO put in unique user check
+	  } else if(client.getInfo("id").equals(temp[1])){
 		  try {
 			client.sendToClient("You cannot block the sending of messages to yourself.");
 		} catch (IOException e) {
@@ -469,13 +469,19 @@ private void createChannel(Object msg, ConnectionToClient client) {
 
 //Chat command
 private void channelChat(Object msg, ConnectionToClient client) {
-	//TODO Add a check to make sure a client cant post in a channel they do not belong to
 	Thread[] clientThreadList = getClientConnections();
 	String [] message = ((String) msg).split(" ",3);
 	String chan = message[1];
 	String channels = "channels";
 	ConnectionToClient ctc;
 	ArrayList<String> chanlist = new ArrayList<String>();
+	ArrayList<String> holder = (ArrayList<String>)client.getInfo(channels);
+	if(!holder.contains(chan)){
+		try{
+			client.sendToClient("Cannot post message in a channel you don't belong to.");
+			return;
+		}catch (Exception e) {}
+	}
 	for (int i = 0; i< clientThreadList.length; i++){
 		ctc = (ConnectionToClient)clientThreadList[i];
 		chanlist = (ArrayList<String>)ctc.getInfo(channels);
