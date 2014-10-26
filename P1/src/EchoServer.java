@@ -319,6 +319,7 @@ public class EchoServer extends AbstractServer
 
   public void handleMessageFromClient(Object msg, ConnectionToClient client)
 {	
+
 	  String[] temp = ((String)msg).split(" ");
 	  if(((String)msg).charAt(0) == '#'){
 		  
@@ -356,27 +357,29 @@ public class EchoServer extends AbstractServer
 		  		case "#status": 		status(msg,client);
 		  								break;
 		  							
-		  		case "#private":	sendToClientPrivate(msg, client);
-		  							break;
+		  		case "#private":		sendToClientPrivate(msg, client);
+		  								break;
 
-		  		case "#channel":	channelChat(msg, client);
-		  			
-		  							break;
+		  		case "#channel":		channelChat(msg, client);
+		  								break;
 
 		  		case "#createchannel":	createChannel(msg, client);
-		  							
-		  							break;
+		  								break;
 
 		  		case "#joinchannel":	joinChannel(msg, client);
-		  			
-		  							break;
+		  								break;
 
 		  		case "#leavechannel":	leaveChannel(msg, client);
-		  			
-		  							break;
+		  								break;
 
 		  		case "#listchannel":	listChannels(msg, client);
-		  							break;
+		  								break;
+		  								
+		  		case "#monitor":		monitor(msg, client);
+		  								break;
+		  								
+		  		case "#accept":			acceptMonitor(client);
+		  								break;
 		  							
 		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
 		  								break;
@@ -387,6 +390,66 @@ public class EchoServer extends AbstractServer
 		  logwrite(msg,client);
 	  }
 }   
+  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+public void monitor(Object msg, ConnectionToClient client){
+	
+	String [] temp = ((String) msg).split(" ");
+	String monor = temp[1];
+	String monee = client.getInfo("id").toString();
+	
+	Thread[] clientThreadList = getClientConnections();
+	ConnectionToClient cltemp;
+	ConnectionToClient monitor = null;
+	ConnectionToClient monitoree = null;
+	
+	for (int i=0; i<clientThreadList.length; i++){
+		cltemp = (ConnectionToClient)clientThreadList[i];
+		if(cltemp.getInfo("id").toString().equals(monor)){
+			monitor = cltemp;
+		}
+		if(cltemp.getInfo("id").toString().equals(monee)){
+			monitoree = cltemp;
+		}
+	}
+	
+	try {
+		monitor.sendToClient("<"+monee+"> wants you to monitor their messages! Type #accept to have their messages forwarded to you.");
+		monitoree.sendToClient("<"+monor+"> will have to confirm the forward.");
+		monee = "*"+monee;
+		monitor.setInfo("whoimonitor", monee);
+		monitoree.setInfo("whomonitorsme", monor);
+		} catch (IOException e) {
+				e.printStackTrace();
+	}
+	
+}
+  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public void acceptMonitor(ConnectionToClient client){
+	String update = "";
+	update = client.getInfo("whoimonitor").toString();
+	System.out.println(client.getInfo("whoimonitor").toString());
+	update = update.substring(1);
+	client.setInfo("whoimonitor", update);
+	
+	Thread[] clientThreadList = getClientConnections();
+	ConnectionToClient cltemp;
+	for (int i=0; i<clientThreadList.length; i++){
+		cltemp = (ConnectionToClient) clientThreadList[i];
+		if(cltemp.getInfo("id").toString().equals(update)){
+			try {
+				cltemp.sendToClient("<"+client.getInfo("id").toString()+"> will monitor your messages.");
+				client.sendToClient("You will now view messages sent to <"+cltemp.getInfo("id").toString()+">.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 //Produces a list of all current channels
@@ -545,7 +608,7 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
   Thread[] clientThreadList = getClientConnections();
   ConnectionToClient cl;
   for (int i=0; i<clientThreadList.length; i++){
-	  cl = (ConnectionToClient)clientThreadList[i];
+ 	  cl = (ConnectionToClient)clientThreadList[i];
     try{
     	if(cl.getInfo("availability").equals(true) && client.getInfo("availability").equals(true)){
     		if(!cl.getInfo("whomonitorsme").equals("")){
