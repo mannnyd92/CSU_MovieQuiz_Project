@@ -248,9 +248,7 @@ public class ChatClient extends AbstractClient
 									}else{send(message);}
 									break;
 									
-			case "listchannel":		if(mesarray.length < 2){
-										System.out.println(helpError);
-									}else{send(message);}
+			case "listchannel":		send(message);
 									break;
 
 
