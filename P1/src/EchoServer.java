@@ -446,7 +446,7 @@ public void monitor(Object msg, ConnectionToClient client){
 			monitoree.sendToClient("Monitoring already in use. Please #cancelmonitor to start another monitor.");
 		}else if(monitor.getInfo("whomonitorsme") != "" || monitor.getInfo("whoimonitor") != ""){
 			monitoree.sendToClient("<"+monor+"> has monitoring already in use. Please have them #cancelmonitor to start another monitor.");
-		}else if(monitor.getInfo("available").equals(false) || monitoree.getInfo("available").equals(false)){
+		}else if(monitor.getInfo("availability").equals(false) || monitoree.getInfo("availability").equals(false)){
 			monitoree.sendToClient("<"+monor+"> is currently unavailable.");		
 		}else{
 			monitor.sendToClient("<"+monee+"> wants you to monitor their messages! Type #accept to have their messages forwarded to you.");
