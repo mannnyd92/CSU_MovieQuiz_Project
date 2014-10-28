@@ -701,7 +701,7 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
     			for(int j = 0; j < clientThreadList.length; j++){
     				clnew = (ConnectionToClient)clientThreadList[j];
     				if (!clnew.getInfo("whoimonitor").equals("")){
-    					if(clnew.getInfo("whoimonitor").equals(client.getInfo("id"))){
+    					if(clnew.getInfo("whoimonitor").equals(cl.getInfo("id"))){
     						clnew.sendToClient("(FORWARD) " + msg);
     					}
     				}
