@@ -32,7 +32,7 @@ public class ClientConsole implements ChatIF
    * The instance of the client that created this ConsoleChat.
    */
   ChatClient client;
-
+ClientGUI cg;
   
   //Constructors ****************************************************
 
@@ -47,7 +47,7 @@ public class ClientConsole implements ChatIF
     try 
     {
       client= new ChatClient(login, pass, host, port, this);
-      ClientGUI cg = new ClientGUI(host,port,client);
+      cg = new ClientGUI(host,port,client);
     } 
     catch(IOException exception) 
     {
@@ -93,7 +93,7 @@ public class ClientConsole implements ChatIF
    */
   public void display(String message) 
   {
-    System.out.println("> " + message);
+    cg.display("> " + message);
   }
 
   
