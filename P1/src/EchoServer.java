@@ -237,6 +237,13 @@ public class EchoServer extends ObservableServer
   public void whoBlocksMe(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
 	  temp = whoBlocksMeList(client);
+	  if(temp.isEmpty()){
+		  try {
+			client.sendToClient("Nobody blocks you!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  }
 	  for(int i = 0; i < temp.size(); i++) {
 		  try {
 			client.sendToClient("Messages to "+(temp.get(i)).toString()+" are being blocked.");

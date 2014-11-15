@@ -58,7 +58,7 @@ public class ClientGUI extends Frame implements ChatIF{
     private JButton whoblocksme = new JButton("Who Blocks Me");
     private JButton whoiblock = new JButton("Who I Block");
     private JButton block = new JButton("Blocking");
-
+    private JButton users = new JButton("List Users");
 	
 	public ClientGUI(){
 		super("Simple Chat");
@@ -78,28 +78,18 @@ public class ClientGUI extends Frame implements ChatIF{
 //		top.add(hostLB = new JLabel("Host: "+client.getHost()));
 //		top.add(portLB = new JLabel("Port: "+client.getPort()));	
 		top.add(logoff);
+//mannny////////////////////////////////////////////////////
+		top.add(users);
+////////////////////////////////////////////////////
 		bottom.add(messageLB);
 		bottom.add(message);
 		bottom.add(sendB);
-
-		//
-//		choice.add("");
-//		choice.add("this");
-//		choice.add("that");
-//		bottom.add(choice);
-		//vbottom.add(choice);
-
-		
-
-		
 		bottom.add(privateMess);
 		bottom.add(channel);
 		bottom.add(forward);
-		
 		bottom.add(whoblocksme);
 		bottom.add(whoiblock);
 		bottom.add(block);
-		
 		bottom.add(available);
 		bottom.add(notavailable);
 		group.add(available);
@@ -109,8 +99,58 @@ public class ClientGUI extends Frame implements ChatIF{
 		LoginPopup lp = new LoginPopup(this);
 		lp.show();
 
+//manny////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		//
+		whoiblock.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#whoiblock");
+				}
+				catch(Exception x){}
+			}
+		});
+	
+		whoblocksme.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#whoblocksme");
+				}
+				catch(Exception x){}
+			}
+		});
+		available.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#available");
+				}
+				catch(Exception x){}
+			}
+		});
+		notavailable.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#notavailable");
+				}
+				catch(Exception x){}
+			}
+		});
+		status.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#status tim");
+				}
+				catch(Exception x){}
+			}
+		});
+		users.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				client.send("#users");
+				}
+				catch(Exception x){}
+			}
+		});
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				send();
@@ -135,9 +175,9 @@ public class ClientGUI extends Frame implements ChatIF{
 	public void send(){
 		try{
 
-			//client.sendToServer(message.getText());
-
-			client.handleMessageFromClientUI(message.getText());
+			client.send(message.getText());
+			
+			//client.handleMessageFromClientUI(message.getText());
 		}
 		catch(Exception ex){
 			messageList.add(ex.toString());
