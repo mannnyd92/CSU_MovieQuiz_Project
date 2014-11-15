@@ -37,7 +37,6 @@ public class ClientGUI extends Frame implements ChatIF{
 	private List messageList = new List();
 	Panel bottom = new Panel();
 	ChatClient client;
-	ChatIF chatif;
 	private JButton privateMess = new JButton("Private");
 	private JButton channel = new JButton("Channel");
 	private JButton forward = new JButton("Forward");
@@ -54,8 +53,6 @@ public class ClientGUI extends Frame implements ChatIF{
 		super("Simple Chat");
 		setSize(500, 600);
 		setVisible(true);
-//		client = clientC;
-//		this.chatif = chatif;
 		
 		setLayout(new BorderLayout(5,5));
 		Panel top = new Panel();
@@ -78,8 +75,7 @@ public class ClientGUI extends Frame implements ChatIF{
 		bottom.add(message);
 		bottom.add(sendB);
 		
-		LoginPopup lp = new LoginPopup(this);
-		lp.show();
+
 		
 		bottom.add(privateMess);
 		bottom.add(channel);
@@ -94,6 +90,9 @@ public class ClientGUI extends Frame implements ChatIF{
 		group.add(available);
 		group.add(notavailable);
 		bottom.add(status);
+		
+		LoginPopup lp = new LoginPopup(this);
+		lp.show();
 		
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
