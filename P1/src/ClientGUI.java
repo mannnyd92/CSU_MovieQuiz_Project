@@ -1,14 +1,20 @@
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.List;
 import java.awt.Panel;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -29,7 +35,9 @@ public class ClientGUI extends Frame implements ChatIF{
 	private JLabel hostLB;
 	private JLabel messageLB = new JLabel("Message: ", Label.LEFT);
 	private List messageList = new List();
-	private ChatClient client;
+	Panel bottom = new Panel();
+	ChatClient client;
+	ChatIF chatif;
 	private JButton privateMess = new JButton("Private");
 	private JButton channel = new JButton("Channel");
 	private JButton forward = new JButton("Forward");
@@ -41,13 +49,13 @@ public class ClientGUI extends Frame implements ChatIF{
     private JButton whoblocksme = new JButton("Who Blocks Me");
     private JButton whoiblock = new JButton("Who I Block");
     private JButton block = new JButton("Blocking");
-
 	
-	public ClientGUI(String host, int port, ChatClient clientC){
+	public ClientGUI(){
 		super("Simple Chat");
 		setSize(500, 600);
 		setVisible(true);
-		client = clientC;
+//		client = clientC;
+//		this.chatif = chatif;
 		
 		setLayout(new BorderLayout(5,5));
 		Panel top = new Panel();
@@ -62,13 +70,16 @@ public class ClientGUI extends Frame implements ChatIF{
 		bottom.setLayout(new GridLayout(0,3));
 		right.setLayout(new GridLayout(0,1));
 		
-		top.add(hostLB = new JLabel("Host: "+clientC.getHost()));
-		top.add(portLB = new JLabel("Port: "+clientC.getPort()));	
+//		top.add(hostLB = new JLabel("Host: "+client.getHost()));
+//		top.add(portLB = new JLabel("Port: "+client.getPort()));	
 		top.add(logoff);
 		
 		bottom.add(messageLB);
 		bottom.add(message);
 		bottom.add(sendB);
+		
+		LoginPopup lp = new LoginPopup(this);
+		lp.show();
 		
 		bottom.add(privateMess);
 		bottom.add(channel);
@@ -89,7 +100,7 @@ public class ClientGUI extends Frame implements ChatIF{
 				send();
 			}
 		});
-		
+
 	this.addWindowListener(new WindowAdapter(){
 		public void windowClosing(WindowEvent we){
 			System.exit(0);
@@ -105,7 +116,7 @@ public class ClientGUI extends Frame implements ChatIF{
 	
 	public void send(){
 		try{
-			client.sendToServer(message.getText());
+			client.handleMessageFromClientUI(message.getText());
 		}
 		catch(Exception ex){
 			messageList.add(ex.toString());
@@ -114,6 +125,70 @@ public class ClientGUI extends Frame implements ChatIF{
 		}
 	}
 	
+	public void setClient(String user, String pass, String host, int portint){
+		try {
+			client = new ChatClient(user, pass, host, portint, this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
+	
+	class LoginPopup extends Dialog{
+		
+		int H_SIZE = 200;
+		int V_SIZE = 200;
+		
+		Panel p = new Panel();
+		TextField user = new TextField();
+		TextField pass = new TextField();
+		TextField host = new TextField();
+		TextField port = new TextField();
+		Label username = new Label("Username");
+		Label password = new Label("Password");
+		Label hosttext = new Label("Host");
+		Label porttext = new Label("Port");
+		JButton exit = new JButton("Exit");
+		JButton login = new JButton("Login");
+		
+		public LoginPopup(Frame parent){
+			super(parent, true);
+			
 
+			p.setLayout(new GridLayout(5,2,5,5));
+			p.add(username);
+			p.add(user);
+			p.add(password);
+			p.add(pass);
+			p.add(hosttext);
+			p.add(host);
+			p.add(porttext);
+			p.add(port);
+			p.add(exit);
+			p.add(login);
+			add("South",p);
+			resize(H_SIZE, V_SIZE);
+		
+		exit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+		
+		login.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int portint = Integer.parseInt(port.getText());
+				setClient(user.getText(), pass.getText(), host.getText(), portint);
+				dispose();
+			}
+		});
+		
+		}
+	}
+	
+	public static void main(String[] args){
+		ClientGUI cg = new ClientGUI();
+	}
+	
 }
