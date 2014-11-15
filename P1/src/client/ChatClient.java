@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ocsf.client.AbstractClient;
 import ocsf.client.ObservableClient;
 import common.ChatIF;
 
@@ -117,202 +116,202 @@ public class ChatClient extends ObservableClient
    *
    * @param message The message from the UI.    
    */
-  public void handleMessageFromClientUI(String message)
-  {		
-	  String[] mesarray = ((String)message).split(" ");
-	  String helpError = "# Requires formatting, use #help command for more info";
-	  if(mesarray[0].charAt(0) == '#'){
-		
-		String tmp = (String)mesarray[0];
-		String tmpmes = tmp.substring(1,tmp.length());
-		String param = "";	
-		switch (tmpmes){
-		
-			case "quit":		quit();
-								break;
-							
-			case "logoff":		try {closeConnection();}catch(Exception e){}
-								break;
-							
-			case "sethost":		if(isConnected()){
-									System.out.println("Already Logged in!, You must logoff to sethost, see #help");
-								}
-								else if(mesarray.length < 2){
-									System.out.println(helpError);
-								}
-								else{
-									try{
-										param = mesarray[1];
-										int port = Integer.valueOf(param);
-										setPort(port);
-									
-									}catch(Exception e){}
-								}
-								break;
-							
-			case "setport":		
-								if(isConnected()){
-									System.out.println("Already Logged in!, You must logoff to setport, see #help");
-								}
-								else if(mesarray.length < 2){
-									System.out.println(helpError);
-								}
-								else{
-									try{
-										param = mesarray[1];
-										int port = Integer.valueOf(param);
-										setPort(port);
-									
-									}catch(Exception e){}
-								}
-								break;	
-							
-			case "login":		if(isConnected()){
-									System.out.println("Already logged in!");
-								}else{
-									try{
-										openConnection();
-									    String loginMsg = "#login " + loginID + " " + password;
-									    this.sendToServer(loginMsg);
-									}catch(Exception e){}
-								}break;
-			
-			case "gethost":		System.out.println(getHost());
-								break;
-							
-			case "getport":		System.out.println(getPort());
-								break;
-							
-			case "block":		if(mesarray.length < 2){
-									System.out.println(helpError);
-								}else{send(message);}
-								break;
-			
-			case "unblock": 	if(mesarray.length < 2){
-									System.out.println(helpError);
-								}else{send(message);}
-								break;
-			
-			case "whoiblock":	send(message);
-								break;
-			
-			case "whoblocksme":	send(message);
-								break;
-			
-			case "changelogin": if(isConnected()){
-									System.out.println("Already Logged in!, You must logoff to changelogin, see #help");
-								}else if(mesarray.length != 3){
-									System.out.println(helpError);
-								}else{
-									
-									loginID = mesarray[1];
-									password = mesarray[2];
-									System.out.println("Your new login is <" + loginID + ">");}
-								break;
-			
-			case "private":		if(mesarray.length < 3){
-									System.out.println(helpError);
-								}else{send(message);}
-								break;
-						
-			case "help":		helpInfo();
-								break;
-								
-			case "notavailable":	send(message);
-									break;
-									
-			case "available":		send(message);
-									break;
-									
-			case "status":			if(mesarray.length < 2){
-										System.out.println(helpError);
-									}else{send(message);}
-									break;
-									
-			case "channel":			if(mesarray.length < 3){
-										System.out.println(helpError);
-									}else{send(message);}
-									break;
-									
-			case "createchannel":	if(mesarray.length < 2){
-										System.out.println(helpError);
-									}else{send(message);}
-									break;
-									
-			case "joinchannel":		if(mesarray.length < 2){
-										System.out.println(helpError);
-									}else{send(message);}
-									break;
-									
-			case "leavechannel":	if(mesarray.length < 2){
-										System.out.println(helpError);
-									}else{send(message);}
-									break;
-									
-			case "listchannel":		send(message);
-									break;
-
-
-
-			case "monitor":			if(mesarray.length<2){
-										System.out.println("#monitor must be followed by a parameter.");
-										break;
-									}else{
-										send(message);
-										break;
-									}
-			
-			case "accept":			send(message);
-									break;
-									
-			case "cancelmonitor":	send(message);
-									break;
-									
-			case "users":			send(message);
-									break;
-									
-			default:		System.out.println(helpError);
-							break;
-			
-		}
-			  
-	  }
-	  
-	  else{
-		  
-		  send(message);
-   
-	  }
-  }
+//  public void handleMessageFromClientUI(String message)
+//  {		
+//	  String[] mesarray = ((String)message).split(" ");
+//	  String helpError = "# Requires formatting, use #help command for more info";
+//	  if(mesarray[0].charAt(0) == '#'){
+//		
+//		String tmp = (String)mesarray[0];
+//		String tmpmes = tmp.substring(1,tmp.length());
+//		String param = "";	
+//		switch (tmpmes){
+//		
+//			case "quit":		quit();
+//								break;
+//							
+//			case "logoff":		try {closeConnection();}catch(Exception e){}
+//								break;
+//							
+//			case "sethost":		if(isConnected()){
+//									clientUI.display("Already Logged in!, You must logoff to sethost, see #help");
+//								}
+//								else if(mesarray.length < 2){
+//									clientUI.display(helpError);
+//								}
+//								else{
+//									try{
+//										param = mesarray[1];
+//										int port = Integer.valueOf(param);
+//										setPort(port);
+//									
+//									}catch(Exception e){}
+//								}
+//								break;
+//							
+//			case "setport":		
+//								if(isConnected()){
+//									clientUI.display("Already Logged in!, You must logoff to setport, see #help");
+//								}
+//								else if(mesarray.length < 2){
+//									clientUI.display(helpError);
+//								}
+//								else{
+//									try{
+//										param = mesarray[1];
+//										int port = Integer.valueOf(param);
+//										setPort(port);
+//									
+//									}catch(Exception e){}
+//								}
+//								break;	
+//							
+//			case "login":		if(isConnected()){
+//									clientUI.display("Already logged in!");
+//								}else{
+//									try{
+//										openConnection();
+//									    String loginMsg = "#login " + loginID + " " + password;
+//									    this.sendToServer(loginMsg);
+//									}catch(Exception e){}
+//								}break;
+//			
+//			case "gethost":		clientUI.display(getHost());
+//								break;
+//							
+//			case "getport":		clientUI.display(getPort());
+//								break;
+//							
+//			case "block":		if(mesarray.length < 2){
+//									clientUI.display(helpError);
+//								}else{send(message);}
+//								break;
+//			
+//			case "unblock": 	if(mesarray.length < 2){
+//									clientUI.display(helpError);
+//								}else{send(message);}
+//								break;
+//			
+//			case "whoiblock":	send(message);
+//								break;
+//			
+//			case "whoblocksme":	send(message);
+//								break;
+//			
+//			case "changelogin": if(isConnected()){
+//									clientUI.display("Already Logged in!, You must logoff to changelogin, see #help");
+//								}else if(mesarray.length != 3){
+//									clientUI.display(helpError);
+//								}else{
+//									
+//									loginID = mesarray[1];
+//									password = mesarray[2];
+//									clientUI.display("Your new login is <" + loginID + ">");}
+//								break;
+//			
+//			case "private":		if(mesarray.length < 3){
+//									clientUI.display(helpError);
+//								}else{send(message);}
+//								break;
+//						
+//			case "help":		helpInfo();
+//								break;
+//								
+//			case "notavailable":	send(message);
+//									break;
+//									
+//			case "available":		send(message);
+//									break;
+//									
+//			case "status":			if(mesarray.length < 2){
+//										clientUI.display(helpError);
+//									}else{send(message);}
+//									break;
+//									
+//			case "channel":			if(mesarray.length < 3){
+//										clientUI.display(helpError);
+//									}else{send(message);}
+//									break;
+//									
+//			case "createchannel":	if(mesarray.length < 2){
+//										clientUI.display(helpError);
+//									}else{send(message);}
+//									break;
+//									
+//			case "joinchannel":		if(mesarray.length < 2){
+//										clientUI.display(helpError);
+//									}else{send(message);}
+//									break;
+//									
+//			case "leavechannel":	if(mesarray.length < 2){
+//										clientUI.display(helpError);
+//									}else{send(message);}
+//									break;
+//									
+//			case "listchannel":		send(message);
+//									break;
+//
+//
+//
+//			case "monitor":			if(mesarray.length<2){
+//										clientUI.display("#monitor must be followed by a parameter.");
+//										break;
+//									}else{
+//										send(message);
+//										break;
+//									}
+//			
+//			case "accept":			send(message);
+//									break;
+//									
+//			case "cancelmonitor":	send(message);
+//									break;
+//									
+//			case "users":			send(message);
+//									break;
+//									
+//			default:		clientUI.display(helpError);
+//							break;
+//			
+//		}
+//			  
+//	  }
+//	  
+//	  else{
+//		  
+//		  send(message);
+//   
+//	  }
+//  }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
    * This method terminates the client.
    */
   
   public void helpInfo(){
-	  System.out.println("	Command				Description");
-	  System.out.println("");
-	  System.out.println("	#login 					Logs user into the server.");
-	  System.out.println("	#logoff 				Logs user off of the server.");
-	  System.out.println("	#changelogin <NewUserName> <password> 	Changes login, Must be logged off.");
-	  System.out.println("	#gethost 				Displays the host.");
-	  System.out.println("	#getport 				Displays the port number.");
-	  System.out.println("	#sethost <host> 			Changes the host. Must be logged off.");
-	  System.out.println("	#setport <port#> 			Changes the port. Must be logged off.");
-	  System.out.println("	#block <user> 				Blocks messages from user.");
-	  System.out.println("	#unblock <user> 			Unblocks messages from user.");
-	  System.out.println("	#whoiblock 				Displays a list of users that you are blocking.");
-	  System.out.println("	#whoblocksme 				Displays a list of users that are blocking you.");
-	  System.out.println("	#status <user>				Returns the status of a user or a channel.");
-	  System.out.println("	#notavailable				Sets your status to unavailable.");
-	  System.out.println("	#available				Sets your status to available.");
-	  System.out.println("	#private  <user> <message>		Sends a message to user specified ONLY!.");
-	  System.out.println("	#channel [channel] <message>		Sends message to users on that channel.");
-	  System.out.println("	#createchannel [channel]		Creates the channel.");
-	  System.out.println("	#joinchannel [channel] 			Assigns you to that channel.");
-	  System.out.println("	#listchannel [channel] 			Lists all live channels.");
-	  System.out.println("	#leavechannel [channel] 		Removes you from that channel.");
-	  System.out.println("	#quit					Exits the program.");
+	  clientUI.display("	Command				Description");
+	  clientUI.display("");
+	  clientUI.display("	#login 					Logs user into the server.");
+	  clientUI.display("	#logoff 				Logs user off of the server.");
+	  clientUI.display("	#changelogin <NewUserName> <password> 	Changes login, Must be logged off.");
+	  clientUI.display("	#gethost 				Displays the host.");
+	  clientUI.display("	#getport 				Displays the port number.");
+	  clientUI.display("	#sethost <host> 			Changes the host. Must be logged off.");
+	  clientUI.display("	#setport <port#> 			Changes the port. Must be logged off.");
+	  clientUI.display("	#block <user> 				Blocks messages from user.");
+	  clientUI.display("	#unblock <user> 			Unblocks messages from user.");
+	  clientUI.display("	#whoiblock 				Displays a list of users that you are blocking.");
+	  clientUI.display("	#whoblocksme 				Displays a list of users that are blocking you.");
+	  clientUI.display("	#status <user>				Returns the status of a user or a channel.");
+	  clientUI.display("	#notavailable				Sets your status to unavailable.");
+	  clientUI.display("	#available				Sets your status to available.");
+	  clientUI.display("	#private  <user> <message>		Sends a message to user specified ONLY!.");
+	  clientUI.display("	#channel [channel] <message>		Sends message to users on that channel.");
+	  clientUI.display("	#createchannel [channel]		Creates the channel.");
+	  clientUI.display("	#joinchannel [channel] 			Assigns you to that channel.");
+	  clientUI.display("	#listchannel [channel] 			Lists all live channels.");
+	  clientUI.display("	#leavechannel [channel] 		Removes you from that channel.");
+	  clientUI.display("	#quit					Exits the program.");
 	  
   }
   
@@ -342,7 +341,7 @@ public class ChatClient extends ObservableClient
 		        ("Could not send message to server.  Terminating client.");
 		      quit();
 		    }
-	  }else{System.out.println("You must be logged on to perform this function, see #help");} 
+	  }else{clientUI.display("You must be logged on to perform this function, see #help");} 
   }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -373,13 +372,13 @@ public class ChatClient extends ObservableClient
   
   protected void connectionClosed() {
 	  timer.cancel();
-	  System.out.println("You have been disconnected.");
+	  clientUI.display("You have been disconnected.");
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected void connectionException(Exception exception){
 	  timer.cancel();
-	  System.out.println("Connection has been closed!");
+	  clientUI.display("Connection has been closed!");
 	  
 	  
   }
