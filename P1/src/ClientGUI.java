@@ -89,15 +89,7 @@ public class ClientGUI extends Frame implements ChatIF{
 				send();
 			}
 		});
-	
-	
-	quitB.addActionListener(new ActionListener(){
-		public void actionPerformed(ActionEvent e){
-			send();
-		}
-	});
-	
-	
+		
 	this.addWindowListener(new WindowAdapter(){
 		public void windowClosing(WindowEvent we){
 			System.exit(0);
