@@ -1,11 +1,13 @@
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.List;
 import java.awt.Panel;
+import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +19,7 @@ import common.ChatIF;
 
 
 public class ClientGUI extends Frame implements ChatIF{
+	
 	
 	private Button closeB = new Button("Close");
 	private Button openB = new Button("Open");
@@ -30,19 +33,28 @@ public class ClientGUI extends Frame implements ChatIF{
 	private Label messageLB = new Label("Message: ", Label.RIGHT);
 	private List messageList = new List();
 	private ChatClient client;
+	//
+	private Choice choice = new Choice();
+	private List Users = new List();
+			
+	//
 	
 	public ClientGUI(String host, int port, ChatClient clientC){
 		super("Simple Chat");
 		setSize(300, 400);
 		setVisible(true);
 		client = clientC;
-		
+		Panel vbottom = new Panel();
 		setLayout(new BorderLayout(5,5));
 		Panel bottom = new Panel();
+		//north south center east west applet applet started
+		add("East", vbottom);
+		
+		//
 		add("Center", messageList);
 		add("South", bottom);
 		
-		bottom.setLayout(new GridLayout(5,2,5,5));
+		bottom.setLayout(new GridLayout(0,3));
 		bottom.add(hostLB);
 		bottom.add(hostTxF);
 		bottom.add(portLB);
@@ -53,7 +65,14 @@ public class ClientGUI extends Frame implements ChatIF{
 		bottom.add(sendB);
 		bottom.add(closeB);
 		bottom.add(quitB);
+		//
+		choice.add("");
+		choice.add("this");
+		choice.add("that");
+		bottom.add(choice);
+		vbottom.add(choice);
 		
+		//
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				send();
@@ -77,13 +96,15 @@ public class ClientGUI extends Frame implements ChatIF{
 	
 	
 	public void display(String message) {
+		
 		messageList.add(message);
 		messageList.makeVisible(messageList.getItemCount()-1);
 	}
 	
 	public void send(){
 		try{
-			client.sendToServer(message.getText());
+			//client.sendToServer(message.getText());
+			client.handleMessageFromClientUI(message.getText());
 		}
 		catch(Exception ex){
 			messageList.add(ex.toString());
