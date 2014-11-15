@@ -1,6 +1,8 @@
 
 
 import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Event;
@@ -9,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.List;
 import java.awt.Panel;
+import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +32,13 @@ import common.ChatIF;
 
 public class ClientGUI extends Frame implements ChatIF{
 	
+
+	//
+	private Choice choice = new Choice();
+	private List Users = new List();
+			
+	//
+
 	private JButton sendB = new JButton("Send");
 	private JTextField message = new JTextField();
 	private JLabel portLB;
@@ -48,32 +58,37 @@ public class ClientGUI extends Frame implements ChatIF{
     private JButton whoblocksme = new JButton("Who Blocks Me");
     private JButton whoiblock = new JButton("Who I Block");
     private JButton block = new JButton("Blocking");
+
 	
 	public ClientGUI(){
 		super("Simple Chat");
 		setSize(500, 600);
 		setVisible(true);
-		
 		setLayout(new BorderLayout(5,5));
 		Panel top = new Panel();
 		Panel bottom = new Panel();
-		Panel right = new Panel();
 		add("Center", messageList);
 		add("North", top);
-		add("East", right);
 		add("South", bottom);
 		
+
 		top.setLayout(new GridLayout(0,3));
 		bottom.setLayout(new GridLayout(0,3));
-		right.setLayout(new GridLayout(0,1));
 		
 //		top.add(hostLB = new JLabel("Host: "+client.getHost()));
 //		top.add(portLB = new JLabel("Port: "+client.getPort()));	
 		top.add(logoff);
-		
 		bottom.add(messageLB);
 		bottom.add(message);
 		bottom.add(sendB);
+
+		//
+//		choice.add("");
+//		choice.add("this");
+//		choice.add("that");
+//		bottom.add(choice);
+		//vbottom.add(choice);
+
 		
 
 		
@@ -91,32 +106,47 @@ public class ClientGUI extends Frame implements ChatIF{
 		group.add(notavailable);
 		bottom.add(status);
 		
-		LoginPopup lp = new LoginPopup(this);
-		lp.show();
+		createLoginPopup();
+
 		
+		//
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				send();
+				message.setText("");
 			}
 		});
 	
 	
-	this.addWindowListener(new WindowAdapter(){
-		public void windowClosing(WindowEvent we){
-			System.exit(0);
-		}
-	});
+		this.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				System.exit(0);
+			}
+		});
+	
+		logoff.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try {
+					client.closeConnection();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				createLoginPopup();
+			}
+		});
 }
 	
 	
 	public void display(String message) {
+		
 		messageList.add(message);
 		messageList.makeVisible(messageList.getItemCount()-1);
 	}
 	
 	public void send(){
 		try{
-			client.handleMessageFromClientUI(message.getText());
+			client.send(message.getText());
 		}
 		catch(Exception ex){
 			messageList.add(ex.toString());
@@ -134,6 +164,10 @@ public class ClientGUI extends Frame implements ChatIF{
 		}
 	}
 	
+	private void createLoginPopup(){
+		LoginPopup lp = new LoginPopup(this);
+		lp.show();
+	}
 	
 	class LoginPopup extends Dialog{
 		
