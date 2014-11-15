@@ -268,6 +268,9 @@ public class ChatClient extends ObservableClient
 			case "cancelmonitor":	send(message);
 									break;
 									
+			case "users":			send(message);
+									break;
+									
 			default:		System.out.println(helpError);
 							break;
 			

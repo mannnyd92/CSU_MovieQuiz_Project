@@ -237,6 +237,13 @@ public class EchoServer extends ObservableServer
   public void whoBlocksMe(ConnectionToClient client){
 	  ArrayList<String> temp = new ArrayList<String>();
 	  temp = whoBlocksMeList(client);
+	  if(temp.isEmpty()){
+		  try {
+			client.sendToClient("Nobody blocks you!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  }
 	  for(int i = 0; i < temp.size(); i++) {
 		  try {
 			client.sendToClient("Messages to "+(temp.get(i)).toString()+" are being blocked.");
@@ -267,12 +274,12 @@ public class EchoServer extends ObservableServer
   }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  public void status(Object msg, ConnectionToClient client){
+  public String status(Object msg, ConnectionToClient client){
 	  String [] parmes = ((String) msg).split(" ");
 	  
 	  //TODO logic for determining  a user or a channel
 	  //code for status on a user
-	  String status;
+	  String status = "";
 	  Thread[] clientThreadList = getClientConnections();
 	  ConnectionToClient cl;
 	  if(channelList.contains(parmes[1])){
@@ -283,7 +290,7 @@ public class EchoServer extends ObservableServer
 			  cl = (ConnectionToClient)clientThreadList[i];
 			  ArrayList<String> chanList = new ArrayList<String>((ArrayList<String>)cl.getInfo(chanListTag));
 			  if(chanList.contains(chanName)){
-				  if (parmes[1] == null){return;}
+				  if (parmes[1] == null){return "";}
 				  if((boolean)cl.getInfo("availability") == false){
 					  status = "User " + cl.getInfo("id") + " is unavailable."; 
 				  }else if((boolean)cl.getInfo("idle")){
@@ -295,6 +302,7 @@ public class EchoServer extends ObservableServer
 				  }else{status = "User " + cl.getInfo("id")  + "'s status not found.";}
 				  
 				  try{ client.sendToClient(status);}catch(Exception e){};
+				  return status;
 			  }
 		  }
 	  }
@@ -309,7 +317,7 @@ public class EchoServer extends ObservableServer
 		  for (int i=0; i<clientThreadList.length; i++){
 			  cl = (ConnectionToClient)clientThreadList[i];
 			  if(cl.getInfo("id").toString().equals(parmes[1])){
-				  if (parmes[1] == null){return;}
+				  if (parmes[1] == null){return "";}
 				  if((boolean)cl.getInfo("availability") == false){
 					  status = "User " + parmes[1] + " is unavailable."; 
 				  }else if((boolean)cl.getInfo("idle")){
@@ -321,15 +329,17 @@ public class EchoServer extends ObservableServer
 				  }else{status = "User " + parmes[1] + "'s status not found.";}
 				  
 				  try{ client.sendToClient(status);}catch(Exception e){};
+				  return status;
 			  }
 		  }
 	  }
+	  return status;
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public void handleMessageFromClient(Object msg, ConnectionToClient client)
 {	
-
+	  
 	  String[] temp = ((String)msg).split(" ");
 	  if(((String)msg).charAt(0) == '#'){
 		  
@@ -392,6 +402,9 @@ public class EchoServer extends ObservableServer
 		  								break;
 		  								
 		  		case "#cancelmonitor":	cancelMonitor(client);
+		  								break;
+		  								
+		  		case "#users":			getUsers(client);
 		  								break;
 		  							
 		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
@@ -906,5 +919,21 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
       System.out.println("ERROR - Could not listen for clients!");
     }
   }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public void getUsers(ConnectionToClient client){
+	System.out.println("reached");
+	//+ status(client.getInfo("id") , client)
+	for(int i = 0; i < LoggedInUsers.size(); i++) {
+		  try {
+			  System.out.println(LoggedInUsers.get(i));
+			client.sendToClient((LoggedInUsers.get(i)) + " is online");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	  } 
+}
 }
 //End of EchoServer class
