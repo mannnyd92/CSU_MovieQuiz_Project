@@ -138,13 +138,13 @@ public class ClientGUI extends Frame implements ChatIF{
 	class LoginPopup extends Dialog{
 		
 		int H_SIZE = 200;
-		int V_SIZE = 200;
+		int V_SIZE = 215;
 		
 		Panel p = new Panel();
-		TextField user = new TextField();
-		TextField pass = new TextField();
-		TextField host = new TextField();
-		TextField port = new TextField();
+		TextField user = new TextField("tim");
+		TextField pass = new TextField("pass");
+		TextField host = new TextField("localhost");
+		TextField port = new TextField("5432");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");
