@@ -1,14 +1,19 @@
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.List;
 import java.awt.Panel;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import client.ChatClient;
 import common.ChatIF;
@@ -16,41 +21,66 @@ import common.ChatIF;
 
 public class ClientGUI extends Frame implements ChatIF{
 	
-	private Button closeB = new Button("Close");
-	private Button openB = new Button("Open");
-	private Button sendB = new Button("Send");
-	private Button quitB = new Button("Quit");
-	private TextField portTxF = new TextField("12345");
-	private TextField hostTxF = new TextField("localhost");
-	private TextField message = new TextField();
-	private Label portLB = new Label("Port: ", Label.RIGHT);
-	private Label hostLB = new Label("Host: ", Label.RIGHT);
-	private Label messageLB = new Label("Message: ", Label.RIGHT);
+	private JButton sendB = new JButton("Send");
+	private JTextField message = new JTextField();
+	private JLabel portLB;
+	private JLabel hostLB;
+	private JLabel messageLB = new JLabel("Message: ", Label.LEFT);
 	private List messageList = new List();
 	private ChatClient client;
+	private JButton privateMess = new JButton("Private");
+	private JButton channel = new JButton("Channel");
+	private JButton forward = new JButton("Forward");
+	private JRadioButton available = new JRadioButton("Available",true);
+	private JRadioButton notavailable = new JRadioButton("Not Available",false);
+    private ButtonGroup group = new ButtonGroup();
+    private JButton status = new JButton("Status");
+    private JButton logoff = new JButton("Change Login");
+    private JButton whoblocksme = new JButton("Who Blocks Me");
+    private JButton whoiblock = new JButton("Who I Block");
+    private JButton block = new JButton("Blocking");
+
 	
 	public ClientGUI(String host, int port, ChatClient clientC){
 		super("Simple Chat");
-		setSize(300, 400);
+		setSize(500, 600);
 		setVisible(true);
 		client = clientC;
 		
 		setLayout(new BorderLayout(5,5));
+		Panel top = new Panel();
 		Panel bottom = new Panel();
+		Panel right = new Panel();
 		add("Center", messageList);
+		add("North", top);
+		add("East", right);
 		add("South", bottom);
 		
-		bottom.setLayout(new GridLayout(5,2,5,5));
-		bottom.add(hostLB);
-		bottom.add(hostTxF);
-		bottom.add(portLB);
-		bottom.add(portTxF);
+		top.setLayout(new GridLayout(0,3));
+		bottom.setLayout(new GridLayout(0,3));
+		right.setLayout(new GridLayout(0,1));
+		
+		top.add(hostLB = new JLabel("Host: "+clientC.getHost()));
+		top.add(portLB = new JLabel("Port: "+clientC.getPort()));	
+		top.add(logoff);
+		
 		bottom.add(messageLB);
 		bottom.add(message);
-		bottom.add(openB);
 		bottom.add(sendB);
-		bottom.add(closeB);
-		bottom.add(quitB);
+		
+		bottom.add(privateMess);
+		bottom.add(channel);
+		bottom.add(forward);
+		
+		bottom.add(whoblocksme);
+		bottom.add(whoiblock);
+		bottom.add(block);
+		
+		bottom.add(available);
+		bottom.add(notavailable);
+		group.add(available);
+		group.add(notavailable);
+		bottom.add(status);
 		
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
