@@ -96,8 +96,6 @@ public class ClientGUI extends Frame implements ChatIF{
 		group.add(notavailable);
 		bottom.add(status);
 		
-		LoginPopup lp = new LoginPopup(this);
-		lp.show();
 
 //manny////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -150,7 +148,15 @@ public class ClientGUI extends Frame implements ChatIF{
 				catch(Exception x){}
 			}
 		});
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+		block.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+				createBlockingPopup();
+				}
+				catch(Exception x){}
+			}
+		});
+		
 		sendB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				send();
@@ -163,7 +169,65 @@ public class ClientGUI extends Frame implements ChatIF{
 			System.exit(0);
 		}
 	});
-}
+	}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+public void createBlockingPopup(){
+		blockingPopup blocking = new blockingPopup(this);
+		blocking.show();
+}	
+
+class blockingPopup extends Dialog{
+	
+	int H_SIZE = 200;
+	int V_SIZE = 200;
+	Panel p = new Panel();
+	TextField user = new TextField("tim");
+	TextField pass = new TextField("pass");
+	TextField host = new TextField("localhost");
+	TextField port = new TextField("4444");
+	Label username = new Label("Username");
+	Label password = new Label("Password");
+	Label hosttext = new Label("Host");
+	Label porttext = new Label("Port");
+	JButton exit = new JButton("Exit");
+	JButton login = new JButton("Login");
+	
+	public blockingPopup(Frame parent){
+		super(parent, true);
+		p.setLayout(new GridLayout(5,2));
+		p.add(username);
+		p.add(user);
+		p.add(password);
+		p.add(pass);
+		p.add(hosttext);
+		p.add(host);
+		p.add(porttext);
+		p.add(port);
+		p.add(exit);
+		p.add(login);
+		add("South",p);
+		resize(H_SIZE, V_SIZE);
+	
+	exit.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			System.exit(0);
+		}
+	});
+	
+	login.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			int portint = Integer.parseInt(port.getText());
+			setClient(user.getText(), pass.getText(), host.getText(), portint);
+			dispose();
+		}
+	});
+	
+	}}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+
+
 	
 	
 	public void display(String message) {
