@@ -32,7 +32,7 @@ public class ClientConsole implements ChatIF
    * The instance of the client that created this ConsoleChat.
    */
   ChatClient client;
-ClientGUI cg;
+  ClientGUI clientgui;
   
   //Constructors ****************************************************
 
@@ -42,12 +42,18 @@ ClientGUI cg;
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
+  public ClientConsole(){
+	  clientgui = new ClientGUI();
+  }
+  
   public ClientConsole(String login,String pass, String host, int port) 
   {
     try 
     {
-      client= new ChatClient(login, pass, host, port, this);
-      cg = new ClientGUI(host,port,client);
+        clientgui = new ClientGUI();
+        client= new ChatClient(login, pass, host, port, this);
+        //clientgui.setClient(client);
+
     } 
     catch(IOException exception) 
     {
@@ -93,7 +99,9 @@ ClientGUI cg;
    */
   public void display(String message) 
   {
-    cg.display("> " + message);
+	  System.out.println("display: " + message);
+	  clientgui.display("> " + message);
+    
   }
 
   
@@ -106,52 +114,53 @@ ClientGUI cg;
    */
   public static void main(String[] args) 
   {
-    String host = "";
-    String login = "";
-    String pass = "";
-    int port = 0;  //The port number
-    try
-    {
-      if(args.length == 0 || args.length == 1){
-    	  System.out.println("Login ID or Password was not provided.");
-    	  System.exit(0);
-      }
-      login = args[0];
-      pass = args[1];
-      
-      if(args.length == 2){
-    	  host = "localhost";
-    	  port = DEFAULT_PORT;
-      }
-      if(args.length > 3){
-    	  host = args[2];
-    	  String portstring = args[3];
-    	  port = Integer.parseInt(portstring);
-      }
-      if(args.length == 3){
-    	  try{
-    		  String onlyport = args[2];
-    		  port = Integer.parseInt(onlyport);
-    		  host = "localhost";
-    	  }
-    	  catch(NumberFormatException nfe){
-    		  host = args[2];
-    		  port = DEFAULT_PORT;
-    	  }
-      }
-    }
-    catch(ArrayIndexOutOfBoundsException e)
-    {
-      host = "localhost";
-    }
-    ClientConsole chat = null;
-    if(port == 0){
-    	chat = new ClientConsole(login, pass, host, DEFAULT_PORT);
-    }
-    else{
-    	chat = new ClientConsole(login, pass, host, port);
-    }
-    chat.accept();  //Wait for console data
+//    String host = "";
+//    String login = "";
+//    String pass = "";
+//    int port = 0;  //The port number
+//    try
+//    {
+//      if(args.length == 0 || args.length == 1){
+//    	  System.out.println("Login ID or Password was not provided.");
+//    	  System.exit(0);
+//      }
+//      login = args[0];
+//      pass = args[1];
+//      
+//      if(args.length == 2){
+//    	  host = "localhost";
+//    	  port = DEFAULT_PORT;
+//      }
+//      if(args.length > 3){
+//    	  host = args[2];
+//    	  String portstring = args[3];
+//    	  port = Integer.parseInt(portstring);
+//      }
+//      if(args.length == 3){
+//    	  try{
+//    		  String onlyport = args[2];
+//    		  port = Integer.parseInt(onlyport);
+//    		  host = "localhost";
+//    	  }
+//    	  catch(NumberFormatException nfe){
+//    		  host = args[2];
+//    		  port = DEFAULT_PORT;
+//    	  }
+//      }
+//    }
+//    catch(ArrayIndexOutOfBoundsException e)
+//    {
+//      host = "localhost";
+//    }
+//    ClientConsole chat = null;
+//    if(port == 0){
+//    	chat = new ClientConsole(login, pass, host, DEFAULT_PORT);
+//    }
+//    else{
+//    	chat = new ClientConsole(login, pass, host, port);
+//    }
+//    chat.accept();  //Wait for console data
+	  ClientConsole cc = new ClientConsole();
   }
 }
 //End of ConsoleChat class
