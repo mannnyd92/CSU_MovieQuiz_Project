@@ -47,7 +47,7 @@ public class ClientConsole implements ChatIF
     try 
     {
       client= new ChatClient(login, pass, host, port, this);
-      cg = new ClientGUI(host,port,client);
+      cg = new ClientGUI();
     } 
     catch(IOException exception) 
     {
