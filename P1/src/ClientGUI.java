@@ -197,6 +197,13 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 			setPrivate();
 		}
 	});
+	
+	forward.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			setForward();
+		}
+	});
+	
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -263,9 +270,12 @@ class blockingPopup extends Dialog{
 
 
 	public void display(String message) {
-		
-		messageList.add(message);
-		messageList.makeVisible(messageList.getItemCount()-1);
+		if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
+			setForwardAccept(message.split(" ",2)[0]);
+		}else{
+			messageList.add(message);
+			messageList.makeVisible(messageList.getItemCount()-1);
+		}
 	}
 
 	public void send(){
@@ -288,14 +298,131 @@ class blockingPopup extends Dialog{
 		}
 	}
 
-	public void setPrivate(){
+	private void setPrivate(){
 		PrivatePopup pp = new PrivatePopup(this);
 		pp.show();	
+	}
+	
+	private void setForward(){
+		ForwardPopup fp = new ForwardPopup(this);
+		fp.show();	
 	}
 	
 	private void createLoginPopup(){
 		LoginPopup lp = new LoginPopup(this);
 		lp.show();
+	}
+	
+	public void setForwardAccept(String c){
+		ForwardAcceptPopup ap = new ForwardAcceptPopup(this, c);
+		ap.show();
+	}
+	
+class ForwardAcceptPopup extends Dialog{
+		
+		int H_SIZE = 300;
+		int V_SIZE = 215;
+		
+		Panel panel = new Panel();
+		Label userL;
+		JButton cancelforward = new JButton("Cancel Forwarding");
+		JButton acceptforward = new JButton("Accept Forwarding");
+		
+		public ForwardAcceptPopup(Frame parent, String c){
+			super(parent, true);
+			
+			userL = new Label(c+" wants you to monitor their messages.");
+			panel.setLayout(new GridLayout(3,2));
+			panel.add(userL);
+			panel.add(acceptforward);
+			panel.add(cancelforward);
+			add("Center", panel);
+			resize(H_SIZE, V_SIZE);
+			
+			cancelforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "Monitoring not accepted!";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});
+			
+			acceptforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#accept";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});			
+		}
+	}
+	
+	class ForwardPopup extends Dialog{
+		
+		int H_SIZE = 200;
+		int V_SIZE = 215;
+		
+		Panel panel = new Panel();
+		Label userL = new Label("Forward To:");
+		TextField userTF = new TextField();
+		JButton cancelforward = new JButton("Cancel Forwarding");
+		JButton acceptforward = new JButton("Forward");
+		JButton exit = new JButton("Exit");
+		
+		public ForwardPopup(Frame parent){
+			super(parent, true);
+			
+			panel.setLayout(new GridLayout(5,2));
+			panel.add(userL);
+			panel.add(userTF);
+			panel.add(acceptforward);
+			panel.add(cancelforward);
+			panel.add(exit);
+			add("Center", panel);
+			resize(H_SIZE, V_SIZE);
+			
+			exit.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					dispose();
+				}
+			});
+			
+			cancelforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#cancelmonitor";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});
+			
+			acceptforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#monitor "+userTF.getText();
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});			
+		}
 	}
 	
 	class PrivatePopup extends Dialog{

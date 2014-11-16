@@ -527,7 +527,7 @@ public void cancelMonitor(ConnectionToClient client){
 	}
 	if(!client.getInfo("whomonitorsme").equals("")){
 		String name = client.getInfo("whomonitorsme").toString();
-		client.setInfo("whomonitorme", update);
+		client.setInfo("whomonitorsme", update);
 		monitor = client;
 		Thread[] clientThreadList = getClientConnections();
 		ConnectionToClient cltemp;
