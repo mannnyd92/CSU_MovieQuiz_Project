@@ -12,6 +12,7 @@ import java.awt.Panel;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import client.ChatClient;
 import common.ChatIF;
@@ -40,6 +42,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 	private List messageList = new List();
 	Panel bottom = new Panel();
 	ChatClient client;
+	OpenDrawPad drawpad;
 	private JButton privateMess = new JButton("Private");
 	private JButton channel = new JButton("Channel");
 	private JButton forward = new JButton("Forward");
@@ -53,6 +56,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
     private JButton whoiblock = new JButton("Who I Block");
     private JButton block = new JButton("Blocking");
     private JButton users = new JButton("List Users");
+    private JButton draw = new JButton("DrawPad");
 	
 	public ClientGUI(){
 		super("Simple Chat");
@@ -75,6 +79,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 //mannny////////////////////////////////////////////////////
 		top.add(users);
 ////////////////////////////////////////////////////
+		top.add(draw);
 		bottom.add(messageLB);
 		bottom.add(message);
 		bottom.add(sendB);
@@ -93,7 +98,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 
 		createLoginPopup();
 
-		OpenDrawPad odp = new OpenDrawPad(client, this);
+		
 //manny////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		whoiblock.addActionListener(new ActionListener(){
@@ -165,7 +170,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 				message.setText("");
 			}
 		});
-
+		
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
 				System.exit(0);
@@ -197,8 +202,19 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 			setPrivate();
 		}
 	});
+	
+	draw.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			opendrawpad();
+		}
+	});
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void opendrawpad(){
+		drawpad = new OpenDrawPad(client, this);
+	}
+	
 	
 public void createBlockingPopup(){
 		blockingPopup blocking = new blockingPopup(this);
@@ -263,6 +279,14 @@ class blockingPopup extends Dialog{
 
 
 	public void display(String message) {
+	      String msg = (String)message;
+	      
+	      if (msg.startsWith("#send"))
+	      {
+	        drawpad.update(client, msg.substring(6));
+	        return;
+	      }
+		
 		
 		messageList.add(message);
 		messageList.makeVisible(messageList.getItemCount()-1);
@@ -271,6 +295,17 @@ class blockingPopup extends Dialog{
 	public void send(){
 		try{
 			client.send(message.getText());
+		}
+		catch(Exception ex){
+			messageList.add(ex.toString());
+			messageList.makeVisible(messageList.getItemCount()-1);
+			messageList.setBackground(Color.yellow);
+		}
+	}
+	
+	public void send(String msg){
+		try{
+			client.send(msg);
 		}
 		catch(Exception ex){
 			messageList.add(ex.toString());
@@ -402,8 +437,17 @@ class blockingPopup extends Dialog{
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
-		display("Uhhh, Update test?");
+	public void update(Observable obs, Object obj) {
+	    if (!(obj instanceof String))
+	        return;
+	      
+	      String msg = (String)obj;
+	      
+	      if (msg.startsWith("#send"))
+	      {
+	        drawpad.update(obs, msg.substring(6));
+	        send(msg);
+	      }
 		
 	}
 

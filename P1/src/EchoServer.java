@@ -406,7 +406,10 @@ public class EchoServer extends ObservableServer
 		  								
 		  		case "#users":			getUsers(client);
 		  								break;
-		  							
+		  		
+		  		case "#send":			sendToAllClients(msg);
+		  								break;
+		  								
 		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
 		  								break;
 		  }
