@@ -21,6 +21,7 @@ import java.util.Observer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -31,7 +32,7 @@ import common.ChatIF;
 import drawpad.OpenDrawPad;
 
 public class ClientGUI extends Frame implements ChatIF, Observer{
-
+	private boolean flag = true;
 	private Choice choice = new Choice();
 	private List Users = new List();
 	private JButton sendB = new JButton("Send");
@@ -58,6 +59,9 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
     private JButton users = new JButton("List Users");
     private JButton draw = new JButton("DrawPad");
 	
+    
+    private List BmessageList = new List();
+    
 	public ClientGUI(){
 		super("Simple Chat");
 		setSize(500, 600);
@@ -203,11 +207,19 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		}
 	});
 	
+
 	draw.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			opendrawpad();
 		}
 	});
+
+	forward.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			setForward();
+		}
+	});
+	
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -223,47 +235,41 @@ public void createBlockingPopup(){
 
 class blockingPopup extends Dialog{
 	
-	int H_SIZE = 200;
-	int V_SIZE = 215;
-	Panel p = new Panel();
-	TextField user = new TextField("tim");
-	TextField pass = new TextField("pass");
-	TextField host = new TextField("localhost");
-	TextField port = new TextField("4444");
-	Label username = new Label("Username");
-	Label password = new Label("Password");
-	Label hosttext = new Label("Host");
-	Label porttext = new Label("Port");
-	JButton exit = new JButton("Exit");
-	JButton login = new JButton("Login");
 	
+	
+
+	JTextField user = new JTextField();
+	Label username = new Label("User: ", Label.LEFT);
+	JButton exit = new JButton("Exit");
+	JButton block = new JButton("Block");
+	JButton unblock = new JButton("unBlock");
 	public blockingPopup(Frame parent){
 		super(parent, true);
-		p.setLayout(new GridLayout(5,2));
-		p.add(username);
-		p.add(user);
-		p.add(password);
-		p.add(pass);
-		p.add(hosttext);
-		p.add(host);
-		p.add(porttext);
-		p.add(port);
-		p.add(exit);
-		p.add(login);
-		add("South",p);
+		
+		int H_SIZE = 300;
+		int V_SIZE = 400;
+		Panel p = new Panel();
+		Panel Bcenter = new Panel();
+		Panel Bbottom = new Panel();
+		Bcenter.setLayout(new GridLayout(6,2));
+		add("North", BmessageList);
+		add("Center", Bcenter);
+		add("South", Bbottom);
+		flag = false;
+		BmessageList.clear();
+		client.send("#users");
+		Bcenter.add(username);
+		Bcenter.add(user);
+		Bcenter.add(block);
+		Bcenter.add(unblock);
+		Bbottom.add(exit);
 		resize(H_SIZE, V_SIZE);
 	
 	exit.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			System.exit(0);
-		}
-	});
-	
-	login.addActionListener(new ActionListener(){
-		public void actionPerformed(ActionEvent e){
-			int portint = Integer.parseInt(port.getText());
-			setClient(user.getText(), pass.getText(), host.getText(), portint);
+			BmessageList.clear();
 			dispose();
+			flag = true;
 		}
 	});
 	
@@ -279,6 +285,7 @@ class blockingPopup extends Dialog{
 
 
 	public void display(String message) {
+
 	      String msg = (String)message;
 	      
 	      if (msg.startsWith("#send"))
@@ -286,10 +293,17 @@ class blockingPopup extends Dialog{
 	        drawpad.update(client, msg.substring(6));
 	        return;
 	      }
-		
-		
-		messageList.add(message);
-		messageList.makeVisible(messageList.getItemCount()-1);
+
+		if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
+			setForwardAccept(message.split(" ",2)[0]);
+		} else if(flag){
+			messageList.add(message);
+			messageList.makeVisible(messageList.getItemCount()-1);
+		}else{
+			BmessageList.add(message);
+			BmessageList.makeVisible(messageList.getItemCount()-1);
+		}
+
 	}
 
 	public void send(){
@@ -323,14 +337,131 @@ class blockingPopup extends Dialog{
 		}
 	}
 
-	public void setPrivate(){
+	private void setPrivate(){
 		PrivatePopup pp = new PrivatePopup(this);
 		pp.show();	
+	}
+	
+	private void setForward(){
+		ForwardPopup fp = new ForwardPopup(this);
+		fp.show();	
 	}
 	
 	private void createLoginPopup(){
 		LoginPopup lp = new LoginPopup(this);
 		lp.show();
+	}
+	
+	public void setForwardAccept(String c){
+		ForwardAcceptPopup ap = new ForwardAcceptPopup(this, c);
+		ap.show();
+	}
+	
+class ForwardAcceptPopup extends Dialog{
+		
+		int H_SIZE = 300;
+		int V_SIZE = 215;
+		
+		Panel panel = new Panel();
+		Label userL;
+		JButton cancelforward = new JButton("Cancel Forwarding");
+		JButton acceptforward = new JButton("Accept Forwarding");
+		
+		public ForwardAcceptPopup(Frame parent, String c){
+			super(parent, true);
+			
+			userL = new Label(c+" wants you to monitor their messages.");
+			panel.setLayout(new GridLayout(3,2));
+			panel.add(userL);
+			panel.add(acceptforward);
+			panel.add(cancelforward);
+			add("Center", panel);
+			resize(H_SIZE, V_SIZE);
+			
+			cancelforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "Monitoring not accepted!";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});
+			
+			acceptforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#accept";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});			
+		}
+	}
+	
+	class ForwardPopup extends Dialog{
+		
+		int H_SIZE = 200;
+		int V_SIZE = 215;
+		
+		Panel panel = new Panel();
+		Label userL = new Label("Forward To:");
+		TextField userTF = new TextField();
+		JButton cancelforward = new JButton("Cancel Forwarding");
+		JButton acceptforward = new JButton("Forward");
+		JButton exit = new JButton("Exit");
+		
+		public ForwardPopup(Frame parent){
+			super(parent, true);
+			
+			panel.setLayout(new GridLayout(5,2));
+			panel.add(userL);
+			panel.add(userTF);
+			panel.add(acceptforward);
+			panel.add(cancelforward);
+			panel.add(exit);
+			add("Center", panel);
+			resize(H_SIZE, V_SIZE);
+			
+			exit.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					dispose();
+				}
+			});
+			
+			cancelforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#cancelmonitor";
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});
+			
+			acceptforward.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					try{
+						String message = "#monitor "+userTF.getText();
+						client.send(message);
+						dispose();
+					}
+					catch(Exception ex){
+						dispose();
+					}
+				}
+			});			
+		}
 	}
 	
 	class PrivatePopup extends Dialog{
@@ -389,7 +520,7 @@ class blockingPopup extends Dialog{
 		TextField user = new TextField("tim");
 		TextField pass = new TextField("pass");
 		TextField host = new TextField("localhost");
-		TextField port = new TextField("5432");
+		TextField port = new TextField("4444");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");

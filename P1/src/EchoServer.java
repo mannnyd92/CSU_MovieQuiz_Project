@@ -530,7 +530,7 @@ public void cancelMonitor(ConnectionToClient client){
 	}
 	if(!client.getInfo("whomonitorsme").equals("")){
 		String name = client.getInfo("whomonitorsme").toString();
-		client.setInfo("whomonitorme", update);
+		client.setInfo("whomonitorsme", update);
 		monitor = client;
 		Thread[] clientThreadList = getClientConnections();
 		ConnectionToClient cltemp;
@@ -927,11 +927,10 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public void getUsers(ConnectionToClient client){
-	System.out.println("reached");
+	
 	//+ status(client.getInfo("id") , client)
 	for(int i = 0; i < LoggedInUsers.size(); i++) {
 		  try {
-			  System.out.println(LoggedInUsers.get(i));
 			client.sendToClient((LoggedInUsers.get(i)) + " is online");
 		} catch (IOException e) {
 			e.printStackTrace();
