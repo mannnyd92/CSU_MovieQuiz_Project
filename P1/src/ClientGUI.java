@@ -1,25 +1,23 @@
 
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.List;
 import java.awt.Panel;
-import java.awt.Scrollbar;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -28,9 +26,9 @@ import javax.swing.JTextField;
 
 import client.ChatClient;
 import common.ChatIF;
+import drawpad.OpenDrawPad;
 
-
-public class ClientGUI extends Frame implements ChatIF{
+public class ClientGUI extends Frame implements ChatIF, Observer{
 
 	private Choice choice = new Choice();
 	private List Users = new List();
@@ -95,7 +93,7 @@ public class ClientGUI extends Frame implements ChatIF{
 
 		createLoginPopup();
 
-
+		OpenDrawPad odp = new OpenDrawPad(client, this);
 //manny////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		whoiblock.addActionListener(new ActionListener(){
@@ -210,7 +208,7 @@ public void createBlockingPopup(){
 class blockingPopup extends Dialog{
 	
 	int H_SIZE = 200;
-	int V_SIZE = 200;
+	int V_SIZE = 215;
 	Panel p = new Panel();
 	TextField user = new TextField("tim");
 	TextField pass = new TextField("pass");
@@ -350,7 +348,7 @@ class blockingPopup extends Dialog{
 	class LoginPopup extends Dialog{
 
 		int H_SIZE = 200;
-		int V_SIZE = 200;
+		int V_SIZE = 215;
 
 		Panel p = new Panel();
 		TextField user = new TextField("tim");
@@ -401,6 +399,12 @@ class blockingPopup extends Dialog{
 
 	public static void main(String[] args){
 		ClientGUI cg = new ClientGUI();
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		display("Uhhh, Update test?");
+		
 	}
 
 }
