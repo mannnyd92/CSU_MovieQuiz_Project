@@ -64,6 +64,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		setVisible(true);
 
 		setLayout(new BorderLayout(5,5));
+		
 		Panel top = new Panel();
 		Panel bottom = new Panel();
 		add("Center", messageList);
@@ -220,7 +221,7 @@ class blockingPopup extends Dialog{
 	
 	
 	
-
+	Choice choice = new Choice();
 	JTextField user = new JTextField();
 	Label username = new Label("User: ", Label.LEFT);
 	JButton exit = new JButton("Exit");
@@ -235,7 +236,9 @@ class blockingPopup extends Dialog{
 		Panel Bcenter = new Panel();
 		Panel Bbottom = new Panel();
 		Bcenter.setLayout(new GridLayout(6,2));
+		
 		add("North", BmessageList);
+		
 		add("Center", Bcenter);
 		add("South", Bbottom);
 		flag = false;
@@ -256,6 +259,17 @@ class blockingPopup extends Dialog{
 		}
 	});
 	
+	block.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			client.send("#block " + user.getText());
+		}
+	});
+	
+	unblock.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			client.send("#unblock " + user.getText());
+		}
+	});
 	}}
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
