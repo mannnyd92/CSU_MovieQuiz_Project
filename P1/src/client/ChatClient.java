@@ -94,7 +94,9 @@ public class ChatClient extends ObservableClient
 	catch(Exception e){
 		
 	}
-
+	if(msg.toString().startsWith("#send")){
+		clientUI.display(msg.toString());
+	}
 	
 	String userparse = (String)msg;
 	try{
@@ -321,6 +323,10 @@ public class ChatClient extends ObservableClient
   
   
   public void send(String message){
+	  String empty = "";
+	  if(message.equals(empty)){
+		  return;
+	  }
 	  if(isConnected()){
 		  try{
 			  
