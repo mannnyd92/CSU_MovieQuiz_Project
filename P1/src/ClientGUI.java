@@ -208,6 +208,12 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		}
 	});
 	
+	channel.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			setChannel();
+		}
+	});
+	
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -320,6 +326,138 @@ class blockingPopup extends Dialog{
 		ap.show();
 	}
 	
+	public void setChannel(){
+		ChannelPopup cp = new ChannelPopup(this);
+		cp.show();
+	}
+
+class ChannelPopup extends Dialog{
+	
+	int H_SIZE = 500;
+	int V_SIZE = 250;
+	
+	Panel panel = new Panel();
+	Label createL = new Label("Create Channel:");
+	TextField createTF = new TextField();
+	JButton createB = new JButton("Create");
+	Label joinL = new Label("Join Channel:");
+	TextField joinTF = new TextField();
+	JButton joinB = new JButton("Join");
+	Label messageL = new Label("Message:");
+	TextField messageTF = new TextField();
+	Label blank = new Label("");
+	Label chanmessageL = new Label("To Channel:");
+	TextField chanmessageTF = new TextField();
+	JButton messageB = new JButton("Send");
+	Label leaveL = new Label("Leave Channel:");
+	TextField leaveTF = new TextField();
+	JButton leaveB = new JButton("Leave Channel");
+	Label listL = new Label("List Users");
+	TextField listTF = new TextField();
+	JButton listB = new JButton("Channel Users");
+	Label blank2 = new Label("");
+	Label blank3 = new Label("");
+	JButton exit = new JButton("Exit");
+	
+	public ChannelPopup(Frame parent){
+		super(parent, true);
+		
+		panel.setLayout(new GridLayout(7,3));
+		panel.add(createL);
+		panel.add(createTF);
+		panel.add(createB);
+		panel.add(joinL);
+		panel.add(joinTF);
+		panel.add(joinB);
+		panel.add(messageL);
+		panel.add(messageTF);
+		panel.add(blank);
+		panel.add(chanmessageL);
+		panel.add(chanmessageTF);
+		panel.add(messageB);
+		panel.add(leaveL);
+		panel.add(leaveTF);
+		panel.add(leaveB);
+		panel.add(listL);
+		panel.add(listTF);
+		panel.add(listB);
+		panel.add(blank2);
+		panel.add(blank3);
+		panel.add(exit);
+		
+		add("Center", panel);
+		resize(H_SIZE, V_SIZE);
+		
+		exit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				dispose();
+			}
+		});
+		
+		createB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					String message = "#createchannel "+createTF.getText();
+					client.send(message);
+				}
+				catch(Exception ex){
+					dispose();
+				}
+			}
+		});
+		
+		joinB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					String message = "#joinchannel "+joinTF.getText();
+					client.send(message);
+				}
+				catch(Exception ex){
+					dispose();
+				}
+			}
+		});
+		
+		messageB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					String message = "#channel "+chanmessageTF.getText()+" "+messageTF.getText();
+					client.send(message);
+				}
+				catch(Exception ex){
+					dispose();
+				}
+			}
+		});
+		
+		leaveB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					String message = "#leavechannel "+leaveTF.getText();
+					client.send(message);
+				}
+				catch(Exception ex){
+					dispose();
+				}
+			}
+		});
+		
+		listB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					String message = "#listchannel "+listTF.getText();
+					client.send(message);
+				}
+				catch(Exception ex){
+					dispose();
+				}
+			}
+		});
+		
+	}
+	
+}
+		
 class ForwardAcceptPopup extends Dialog{
 		
 		int H_SIZE = 300;
@@ -483,7 +621,7 @@ class ForwardAcceptPopup extends Dialog{
 		TextField user = new TextField("tim");
 		TextField pass = new TextField("pass");
 		TextField host = new TextField("localhost");
-		TextField port = new TextField("4444");
+		TextField port = new TextField("5432");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");
