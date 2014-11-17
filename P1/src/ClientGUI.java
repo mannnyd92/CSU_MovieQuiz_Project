@@ -321,12 +321,13 @@ class blockingPopup extends Dialog{
 		client.send("#break");
 		client.send("#valid");
 		client.send("#line");
-	
+		
+		
 		Bcenter.add(block);
 		Bcenter.add(unblock);
 		Bcenter.add(exit);
 		resize(H_SIZE, V_SIZE);
-		
+	
 	
 	exit.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
@@ -338,10 +339,11 @@ class blockingPopup extends Dialog{
 	
 	block.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			//if(!user.getText().isEmpty()){
 			
-			//client.send("#block " + user.getText());
+			
+			
 			if(!BmessageList.getSelectedItem().isEmpty()){
+				
 				client.send("#break");
 				client.send("#block " + BmessageList.getSelectedItem());
 				client.send("#break");
@@ -361,6 +363,7 @@ class blockingPopup extends Dialog{
 	unblock.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			if(!BmessageList.getSelectedItem().isEmpty()){
+				
 				client.send("#break");
 				client.send("#unblock " + BmessageList.getSelectedItem());
 				client.send("#break");
@@ -371,6 +374,7 @@ class blockingPopup extends Dialog{
 				client.send("#break");
 				client.send("#valid");
 				client.send("#line");
+				
 				
 			}
 		}
@@ -401,6 +405,7 @@ class blockingPopup extends Dialog{
 			
 			BmessageList.add(message);
 			BmessageList.makeVisible(BmessageList.getItemCount()-1);
+			
 		
 			
 		}
