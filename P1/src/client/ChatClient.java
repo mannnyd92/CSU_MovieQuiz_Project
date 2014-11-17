@@ -69,7 +69,7 @@ public class ChatClient extends ObservableClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-	  
+	  String[] mesArray = null;
 	if(isConnected() == false){
 		connectionClosed();
 	}
@@ -80,11 +80,12 @@ public class ChatClient extends ObservableClient
 			blockedList = ((ArrayList<String>) msg);
 			return;
 		}else{
+			mesArray = ((String)msg).split(" ");
 			String userparse = "";
 			userparse = msg.toString();
 			userparse = userparse.substring(1, userparse.indexOf(">"));
 			
-			if(blockedList.contains(userparse) || blockedList.contains("server")){
+			if(blockedList.contains(userparse) && mesArray.length > 1 || blockedList.contains("server") && mesArray.length > 1){
 				
 				return;
 			}
@@ -105,7 +106,7 @@ public class ChatClient extends ObservableClient
 	}catch(Exception e){}
 	
 	
-	if(blockedList.contains(userparse)){
+	if(blockedList.contains(userparse) && mesArray.length > 1){
 		
 		return;
 	}

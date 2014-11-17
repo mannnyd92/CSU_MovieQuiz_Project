@@ -32,6 +32,7 @@ import common.ChatIF;
 import drawpad.OpenDrawPad;
 
 public class ClientGUI extends Frame implements ChatIF, Observer{
+	
 	private boolean flag = true;
 	private boolean flag2 = false;
 	private Choice choice = new Choice();
@@ -392,7 +393,7 @@ class blockingPopup extends Dialog{
 		if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
 			setForwardAccept(message.split(" ",2)[0]);
 		} 
-		//if(flag){
+		
 			messageList.add(message);
 			messageList.makeVisible(messageList.getItemCount()-1);
 			
