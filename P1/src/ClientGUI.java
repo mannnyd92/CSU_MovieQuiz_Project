@@ -381,6 +381,7 @@ class blockingPopup extends Dialog{
 
 
 	public void display(String message) {
+		
 		if(flag){
 	     String msg = (String)message;
 	      
@@ -389,14 +390,15 @@ class blockingPopup extends Dialog{
 	        drawpad.update(client, msg.substring(6));
 	        return;
 	     }
-
-		if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
-			setForwardAccept(message.split(" ",2)[0]);
-		} 
+	     if(!(message.split(" ",2)[1].isEmpty())){
+	        if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
+				setForwardAccept(message.split(" ",2)[0]);
+	        }
+		}else{
 		
 			messageList.add(message);
 			messageList.makeVisible(messageList.getItemCount()-1);
-			
+		}
 		}else{
 			
 			BmessageList.add(message);
@@ -542,48 +544,56 @@ class ChannelPopup extends Dialog{
 		
 		createB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				try{
-					String message = "#createchannel "+createTF.getText();
-					client.send(message);
-				}
-				catch(Exception ex){
-					dispose();
+				if(!createTF.getText().isEmpty()){
+					try{
+						String message = "#createchannel "+createTF.getText();
+						client.send(message);
+					}
+					catch(Exception ex){
+						dispose();
+					}
 				}
 			}
 		});
 		
 		joinB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				try{
-					String message = "#joinchannel "+joinTF.getText();
-					client.send(message);
-				}
-				catch(Exception ex){
-					dispose();
+				if(!joinTF.getText().isEmpty()){
+					try{
+						String message = "#joinchannel "+joinTF.getText();
+						client.send(message);
+					}
+					catch(Exception ex){
+						dispose();
+					}
 				}
 			}
 		});
 		
 		messageB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				try{
-					String message = "#channel "+chanmessageTF.getText()+" "+messageTF.getText();
-					client.send(message);
-				}
-				catch(Exception ex){
-					dispose();
+				if(!chanmessageTF.getText().isEmpty() && !messageTF.getText().isEmpty()){
+					try{
+						String message = "#channel "+chanmessageTF.getText()+" "+messageTF.getText();
+						client.send(message);
+					}
+					catch(Exception ex){
+						dispose();
+					}
 				}
 			}
 		});
 		
 		leaveB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				try{
-					String message = "#leavechannel "+leaveTF.getText();
-					client.send(message);
-				}
-				catch(Exception ex){
-					dispose();
+				if(!leaveTF.getText().isEmpty()){
+					try{
+						String message = "#leavechannel "+leaveTF.getText();
+						client.send(message);
+					}
+					catch(Exception ex){
+						dispose();
+					}
 				}
 			}
 		});
@@ -591,8 +601,8 @@ class ChannelPopup extends Dialog{
 		listB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				try{
-					String message = "#listchannel "+listTF.getText();
-					client.send(message);
+					String message = "#listchannel";
+					client.send("#listchannel");
 				}
 				catch(Exception ex){
 					dispose();
@@ -699,13 +709,15 @@ class ForwardAcceptPopup extends Dialog{
 			
 			acceptforward.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e){
-					try{
-						String message = "#monitor "+userTF.getText();
-						client.send(message);
-						dispose();
-					}
-					catch(Exception ex){
-						dispose();
+					if(!userTF.getText().isEmpty()){
+						try{
+							String message = "#monitor "+userTF.getText();
+							client.send(message);
+							dispose();
+						}
+						catch(Exception ex){
+							dispose();
+						}
 					}
 				}
 			});			
@@ -747,13 +759,15 @@ class ForwardAcceptPopup extends Dialog{
 			
 			send.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e){
-					try{
-						String message = "#private "+userTF.getText()+" "+messTF.getText();
-						client.send(message);
-						dispose();
-					}
-					catch(Exception ex){
-						dispose();
+					if(!userTF.getText().isEmpty() && !messTF.getText().isEmpty()){
+						try{
+							String message = "#private "+userTF.getText()+" "+messTF.getText();
+							client.send(message);
+							dispose();
+						}
+						catch(Exception ex){
+							dispose();
+						}
 					}
 				}
 			});			
@@ -770,7 +784,7 @@ class ForwardAcceptPopup extends Dialog{
 		TextField user = new TextField("tim");
 		TextField pass = new TextField("pass");
 		TextField host = new TextField("localhost");
-		TextField port = new TextField("4444");
+		TextField port = new TextField("5432");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");
