@@ -1,5 +1,5 @@
 
-
+//TODO list users lists logged in users do we want that or valid users?
 import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Color;
@@ -384,35 +384,40 @@ class blockingPopup extends Dialog{
 //Helper////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 
 
-	public void display(String message) {
-		
-		if(flag){
-	     String msg = (String)message;
-	      
-	     if (msg.startsWith("#send"))
-	     {
-	        drawpad.update(client, msg.substring(6));
-	        return;
-	     }
-	     if(!(message.split(" ",2)[1].isEmpty())){
-	        if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
-				setForwardAccept(message.split(" ",2)[0]);
-	        }
-		}else{
-		
-			messageList.add(message);
-			messageList.makeVisible(messageList.getItemCount()-1);
-		}
-		}else{
-			
-			BmessageList.add(message);
-			BmessageList.makeVisible(BmessageList.getItemCount()-1);
-			
-		
-			
+public void display(String message) {
+	String [] tmparray = null;
+
+	if(flag){
+		String msg = (String)message;
+
+		if (msg.startsWith("#send"))
+		{
+			drawpad.update(client, msg.substring(6));
+			return;
 		}
 
+		try{
+			tmparray = message.split(" ",2);
+			if (tmparray.length > 2){
+				if(tmparray [1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
+					setForwardAccept(message.split(" ",2)[0]);
+				}
+			}else{
+
+				messageList.add(message);
+				messageList.makeVisible(messageList.getItemCount()-1);
+			}
+		}catch(Exception e){}  
+	
+
+	}else{
+
+		BmessageList.add(message);
+		BmessageList.makeVisible(BmessageList.getItemCount()-1);
+
 	}
+
+}
 
 	public void send(){
 		try{
@@ -789,7 +794,7 @@ class ForwardAcceptPopup extends Dialog{
 		TextField user = new TextField("tim");
 		TextField pass = new TextField("pass");
 		TextField host = new TextField("localhost");
-		TextField port = new TextField("5432");
+		TextField port = new TextField("4444");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");

@@ -80,6 +80,8 @@ public class ChatClient extends ObservableClient
 			blockedList = ((ArrayList<String>) msg);
 			return;
 		}else{
+			//TODO blocking with channels not working think the bug lives some where in here the parsing of the user when from a channel...not sure though.
+			
 			mesArray = ((String)msg).split(" ");
 			String userparse = "";
 			userparse = msg.toString();
