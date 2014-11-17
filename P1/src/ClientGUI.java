@@ -33,6 +33,7 @@ import drawpad.OpenDrawPad;
 
 public class ClientGUI extends Frame implements ChatIF, Observer{
 	private boolean flag = true;
+	private boolean flag2 = false;
 	private Choice choice = new Choice();
 	private List Users = new List();
 	private JButton sendB = new JButton("Send");
@@ -58,9 +59,8 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
     private JButton block = new JButton("Blocking");
     private JButton users = new JButton("List Users");
     private JButton draw = new JButton("DrawPad");
-	
-    
     private List BmessageList = new List();
+    private List WmessageList = new List();
     
 	public ClientGUI(){
 		super("Simple Chat");
@@ -142,7 +142,8 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		status.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				try{
-				client.send("#status tim");
+				//client.send("#status tim");
+				createStatusPopup();
 				}
 				catch(Exception x){}
 			}
@@ -228,51 +229,103 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 	});
 	
 	}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Status/////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void opendrawpad(){
-		drawpad = new OpenDrawPad(client, this);
+	class statusPopup extends Dialog{
+		
+		JTextField user = new JTextField();
+		Label username = new Label("User: ", Label.LEFT);
+		JButton exit = new JButton("Exit");
+		JButton status = new JButton("Get Status");
+		
+		
+		public statusPopup(Frame parent){
+			super(parent, true);
+			
+			int H_SIZE = 350;
+			int V_SIZE = 600;
+			Panel p = new Panel();
+			Panel Bcenter = new Panel();
+			Panel Bbottom = new Panel();
+			
+			
+			add("Center", BmessageList);
+			add("South", Bcenter);
+			Bcenter.setLayout(new GridLayout(0,3));
+			flag = false;
+			BmessageList.clear();
+			client.send("#listchannel");
+			client.send("#break");
+			client.send("#valid");
+			
+
+			Bcenter.add(status);
+			Bcenter.add(exit);
+			resize(H_SIZE, V_SIZE);
+			
+		
+		exit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				BmessageList.clear();
+				dispose();
+				flag = true;
+			}
+		});
+		
+		status.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(!BmessageList.getSelectedItem().isEmpty()){
+					client.send("#line");
+					client.send("#break");
+					client.send("#status " + BmessageList.getSelectedItem());
+					client.send("#break");
+					client.send("#listchannel");
+					client.send("#break");
+					client.send("#valid");
+				}
+				
+			}
+		});
+		
+		
+		
+		}
 	}
-	
-	
-public void createBlockingPopup(){
-		blockingPopup blocking = new blockingPopup(this);
-		blocking.show();
-}	
+//Blocking//////////////////////////////////////////////////////////////////////////////////////////////
 
 class blockingPopup extends Dialog{
-	
-	
-	
-	Choice choice = new Choice();
-	JTextField user = new JTextField();
-	Label username = new Label("User: ", Label.LEFT);
+
 	JButton exit = new JButton("Exit");
 	JButton block = new JButton("Block");
 	JButton unblock = new JButton("unBlock");
+	
 	public blockingPopup(Frame parent){
 		super(parent, true);
-		
+	
 		int H_SIZE = 300;
-		int V_SIZE = 400;
+		int V_SIZE = 800;
 		Panel p = new Panel();
 		Panel Bcenter = new Panel();
-		Panel Bbottom = new Panel();
-		Bcenter.setLayout(new GridLayout(6,2));
+		Bcenter.setLayout(new GridLayout(0,2));
+		p.setLayout(new GridLayout(1,2));
+		add("Center", BmessageList);
+		add("South", Bcenter);
 		
-		add("North", BmessageList);
-		
-		add("Center", Bcenter);
-		add("South", Bbottom);
 		flag = false;
 		BmessageList.clear();
+		client.send("#who");
+		client.send("#whoiblock");
+		client.send("#break");
 		client.send("#users");
-		Bcenter.add(username);
-		Bcenter.add(user);
+		client.send("#break");
+		client.send("#valid");
+		client.send("#line");
+	
 		Bcenter.add(block);
 		Bcenter.add(unblock);
-		Bbottom.add(exit);
+		Bcenter.add(exit);
 		resize(H_SIZE, V_SIZE);
+		
 	
 	exit.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
@@ -284,44 +337,71 @@ class blockingPopup extends Dialog{
 	
 	block.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			client.send("#block " + user.getText());
+			//if(!user.getText().isEmpty()){
+			
+			//client.send("#block " + user.getText());
+			if(!BmessageList.getSelectedItem().isEmpty()){
+				client.send("#break");
+				client.send("#block " + BmessageList.getSelectedItem());
+				client.send("#break");
+				client.send("#who");
+				client.send("#whoiblock");
+				client.send("#break");
+				client.send("#users");
+				client.send("#break");
+				client.send("#valid");
+				client.send("#line");
+				
+			}
+			
 		}
 	});
 	
 	unblock.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			client.send("#unblock " + user.getText());
+			if(!BmessageList.getSelectedItem().isEmpty()){
+				client.send("#break");
+				client.send("#unblock " + BmessageList.getSelectedItem());
+				client.send("#break");
+				client.send("#who");
+				client.send("#whoiblock");
+				client.send("#break");
+				client.send("#users");
+				client.send("#break");
+				client.send("#valid");
+				client.send("#line");
+				
+			}
 		}
 	});
 	}}
 	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
-
-
-	
-	
-
-
+//Helper////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 
 
 	public void display(String message) {
-
-	      String msg = (String)message;
+		if(flag){
+	     String msg = (String)message;
 	      
-	      if (msg.startsWith("#send"))
-	      {
+	     if (msg.startsWith("#send"))
+	     {
 	        drawpad.update(client, msg.substring(6));
 	        return;
-	      }
+	     }
 
 		if(message.split(" ",2)[1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
 			setForwardAccept(message.split(" ",2)[0]);
-		} else if(flag){
+		} 
+		//if(flag){
 			messageList.add(message);
 			messageList.makeVisible(messageList.getItemCount()-1);
+			
 		}else{
+			
 			BmessageList.add(message);
-			BmessageList.makeVisible(messageList.getItemCount()-1);
+			BmessageList.makeVisible(BmessageList.getItemCount()-1);
+		
+			
 		}
 
 	}
@@ -382,6 +462,20 @@ class blockingPopup extends Dialog{
 		cp.show();
 	}
 
+	public void opendrawpad(){
+		drawpad = new OpenDrawPad(client, this);
+	}
+	
+	public void createBlockingPopup(){
+		blockingPopup blocking = new blockingPopup(this);
+		blocking.show();
+	}
+	public void createStatusPopup(){
+		statusPopup status = new statusPopup(this);
+		status.show();
+	}
+//channel stuff//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 class ChannelPopup extends Dialog{
 	
 	int H_SIZE = 500;
@@ -508,7 +602,8 @@ class ChannelPopup extends Dialog{
 	}
 	
 }
-		
+//Forwarding////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class ForwardAcceptPopup extends Dialog{
 		
 		int H_SIZE = 300;
@@ -615,6 +710,7 @@ class ForwardAcceptPopup extends Dialog{
 			});			
 		}
 	}
+//Private//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	class PrivatePopup extends Dialog{
 		
@@ -662,6 +758,7 @@ class ForwardAcceptPopup extends Dialog{
 			});			
 		}
 	}
+//Login///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	class LoginPopup extends Dialog{
 
@@ -672,7 +769,7 @@ class ForwardAcceptPopup extends Dialog{
 		TextField user = new TextField("tim");
 		TextField pass = new TextField("pass");
 		TextField host = new TextField("localhost");
-		TextField port = new TextField("5432");
+		TextField port = new TextField("4444");
 		Label username = new Label("Username");
 		Label password = new Label("Password");
 		Label hosttext = new Label("Host");

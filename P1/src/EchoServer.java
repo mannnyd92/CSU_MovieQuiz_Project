@@ -259,14 +259,14 @@ public class EchoServer extends ObservableServer
 	  temp = whoIBlockList(client);
 	  if(temp.isEmpty()){
 		  try {
-			client.sendToClient("No blocking is in effect.");
+			client.sendToClient("You currently BLOCK NO ONE!");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	  }
 	  for(int i = 0; i < temp.size(); i++) {
 		  try {
-			client.sendToClient("Messages from "+(temp.get(i)).toString()+" are blocked.");
+			client.sendToClient((temp.get(i)).toString()+" is blocked.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -301,8 +301,9 @@ public class EchoServer extends ObservableServer
 					  status = "User " + cl.getInfo("id")  + " is offline.";
 				  }else{status = "User " + cl.getInfo("id")  + "'s status not found.";}
 				  
-				  try{ client.sendToClient(status);}catch(Exception e){};
-				  return status;
+				  try{client.sendToClient(status);}catch(Exception e){};
+				  
+				  //return status;
 			  }
 		  }
 	  }
@@ -408,6 +409,18 @@ public class EchoServer extends ObservableServer
 		  								break;
 		  		
 		  		case "#send":			sendToAllClients(msg);
+		  								break;
+		  								
+		  		case "#valid":			getValid(client);
+		  								break;
+		  								
+		  		case "#break":			addBreak(client);
+		  								break;
+		  				
+		  		case "#line":			addLine(client);
+		  								break;
+		  								
+		  		case "#who":			addWhoIBlock(client);
 		  								break;
 		  								
 		  		default:				System.out.println("Server handleMessageFromClient default case got hit.");
@@ -556,6 +569,7 @@ public void cancelMonitor(ConnectionToClient client){
 //Produces a list of all current channels
 private void listChannels(Object msg, ConnectionToClient client) {
 	try {
+			client.sendToClient("Channels:");
 		for(int i = 0; i < channelList.size(); i++){	
 			client.sendToClient(channelList.get(i));
 		}
@@ -926,16 +940,55 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-public void getUsers(ConnectionToClient client){
+public void getValid(ConnectionToClient client){
 	
 	//+ status(client.getInfo("id") , client)
-	for(int i = 0; i < LoggedInUsers.size(); i++) {
-		  try {
-			client.sendToClient((LoggedInUsers.get(i)) + " is online");
-		} catch (IOException e) {
-			e.printStackTrace();
+	
+	try{	
+		client.sendToClient("Valid Users:");
+		for(int i = 0; i < validUsers.size(); i++) {
+			client.sendToClient((validUsers.get(i)));
 		}
-	  } 
+	}catch (IOException e) {
+				e.printStackTrace();
+			}
+}
+		  
+	
+public void getUsers(ConnectionToClient client){
+
+	try{
+		client.sendToClient("Logged in Users:");
+	for(int i = 0; i < LoggedInUsers.size(); i++) {
+		client.sendToClient((LoggedInUsers.get(i)));
+	}
+	}catch(IOException e) {
+		e.printStackTrace();
+	}
+
+
+	}
+public void addBreak(ConnectionToClient client){
+	
+	try{
+		client.sendToClient(" ");
+	}catch(IOException e){
+		e.printStackTrace();
+	}
+}
+public void addLine(ConnectionToClient client){
+	try{
+		client.sendToClient("____________________________________");
+	}catch(IOException e){
+		e.printStackTrace();
+	}
+}
+public void addWhoIBlock(ConnectionToClient client){
+	try{
+		client.sendToClient("Who I Block: ");
+	}catch(IOException e){
+		e.printStackTrace();
+	}
 }
 }
 //End of EchoServer class
