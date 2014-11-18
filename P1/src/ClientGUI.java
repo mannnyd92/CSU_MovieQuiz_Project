@@ -1,5 +1,5 @@
 
-//TODO list users lists logged in users do we want that or valid users?
+
 import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Color;
@@ -23,6 +23,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -77,14 +78,9 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		add("South", bottom);
 
 		top.setLayout(new GridLayout(0,3));
-		bottom.setLayout(new GridLayout(0,3));
-		
-//		top.add(hostLB = new JLabel("Host: "+client.getHost()));
-//		top.add(portLB = new JLabel("Port: "+client.getPort()));	
+		bottom.setLayout(new GridLayout(0,3));	
 		top.add(logoff);
-//mannny////////////////////////////////////////////////////
 		top.add(users);
-////////////////////////////////////////////////////
 		top.add(draw);
 		bottom.add(messageLB);
 		bottom.add(message);
@@ -153,6 +149,8 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 			public void actionPerformed(ActionEvent e){
 				try{
 				client.send("#users");
+				client.send("#break");
+				client.send("#valid");
 				}
 				catch(Exception x){}
 			}
@@ -275,7 +273,7 @@ public class ClientGUI extends Frame implements ChatIF, Observer{
 		
 		status.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(!BmessageList.getSelectedItem().isEmpty()){
+				if(BmessageList.getSelectedIndex() != -1){
 					client.send("#line");
 					client.send("#break");
 					client.send("#status " + BmessageList.getSelectedItem());
@@ -342,7 +340,7 @@ class blockingPopup extends Dialog{
 			
 			
 			
-			if(!BmessageList.getSelectedItem().isEmpty()){
+			if(BmessageList.getSelectedIndex() != -1){
 				
 				client.send("#break");
 				client.send("#block " + BmessageList.getSelectedItem());
@@ -362,7 +360,7 @@ class blockingPopup extends Dialog{
 	
 	unblock.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			if(!BmessageList.getSelectedItem().isEmpty()){
+			if(BmessageList.getSelectedIndex() != -1){
 				
 				client.send("#break");
 				client.send("#unblock " + BmessageList.getSelectedItem());
@@ -385,7 +383,8 @@ class blockingPopup extends Dialog{
 
 
 public void display(String message) {
-	String [] tmparray = null;
+	
+	CharSequence c = "wants you to monitor their messages! Type #accept to have their messages forwarded to you.";
 
 	if(flag){
 		String msg = (String)message;
@@ -397,18 +396,18 @@ public void display(String message) {
 		}
 
 		try{
-			tmparray = message.split(" ",2);
-			if (tmparray.length > 2){
-				if(tmparray [1].equals("wants you to monitor their messages! Type #accept to have their messages forwarded to you.")){
-					setForwardAccept(message.split(" ",2)[0]);
-				}
+
+			if (message.contains(c)){
+
+				setForwardAccept(message.split(" ",2)[0]);
+
 			}else{
 
 				messageList.add(message);
 				messageList.makeVisible(messageList.getItemCount()-1);
 			}
 		}catch(Exception e){}  
-	
+
 
 	}else{
 
@@ -512,7 +511,7 @@ class ChannelPopup extends Dialog{
 	JButton leaveB = new JButton("Leave Channel");
 	Label listL = new Label("List Users");
 	TextField listTF = new TextField();
-	JButton listB = new JButton("Channel Users");
+	JButton listB = new JButton("Channel List");
 	Label blank2 = new Label("");
 	Label blank3 = new Label("");
 	JButton exit = new JButton("Exit");

@@ -85,7 +85,7 @@ public class ChatClient extends ObservableClient
 			mesArray = ((String)msg).split(" ");
 			String userparse = "";
 			userparse = msg.toString();
-			userparse = userparse.substring(1, userparse.indexOf(">"));
+			userparse = userparse.substring(userparse.indexOf("<") + 1, userparse.indexOf(">"));
 			
 			if(blockedList.contains(userparse) && mesArray.length > 1 || blockedList.contains("server") && mesArray.length > 1){
 				
