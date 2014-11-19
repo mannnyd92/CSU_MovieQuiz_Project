@@ -190,11 +190,14 @@ public class EchoServer extends ObservableServer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   public void unblock(Object msg, ConnectionToClient client){
-	
+	 
 	  try{
 		  String[] temp = ((String)msg).split(" ");
 		  String unblock = temp[1];
-		  
+		  if(unblock.length() < 2){
+			  
+			  unblockAll(client);
+		  }
 		  if(!whoIBlockList(client).contains(temp[1])){
 			  try {
 				client.sendToClient("Messages from "+temp[1]+" were not blocked.");
@@ -817,6 +820,25 @@ public void sendToAllClients(Object msg, ConnectionToClient client){
 		  return false;
 	  }
   }
+  
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  protected void unblockAll(ConnectionToClient client){
+	  try{
+	  	  String block = "blocklist";
+		  ArrayList<String> temp = new ArrayList<String>();
+		  temp = (ArrayList<String>)client.getInfo(block);
+		  temp.clear();
+		  client.setInfo(block, temp);
+		  
+		  
+	  }
+	  catch(Exception e){
+		  
+	  }
+  }
+	  
+  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   protected boolean removeBlockedUser(ConnectionToClient client, String unblockee){

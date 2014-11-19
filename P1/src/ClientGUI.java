@@ -297,6 +297,8 @@ class blockingPopup extends Dialog{
 	JButton exit = new JButton("Exit");
 	JButton block = new JButton("Block");
 	JButton unblock = new JButton("unBlock");
+	JLabel select = new JLabel("-Select user to unblock");
+	JLabel all	= new JLabel("-To unblock all select blank line");
 	
 	public blockingPopup(Frame parent){
 		super(parent, true);
@@ -306,7 +308,8 @@ class blockingPopup extends Dialog{
 		Panel p = new Panel();
 		Panel Bcenter = new Panel();
 		Bcenter.setLayout(new GridLayout(0,2));
-		p.setLayout(new GridLayout(1,2));
+		p.setLayout(new GridLayout(2,2));
+		add("North", p);
 		add("Center", BmessageList);
 		add("South", Bcenter);
 		
@@ -320,7 +323,8 @@ class blockingPopup extends Dialog{
 		client.send("#valid");
 		client.send("#line");
 		
-		
+		p.add(select);
+		p.add(all);
 		Bcenter.add(block);
 		Bcenter.add(unblock);
 		Bcenter.add(exit);
@@ -361,7 +365,6 @@ class blockingPopup extends Dialog{
 	unblock.addActionListener(new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			if(BmessageList.getSelectedIndex() != -1){
-				
 				client.send("#break");
 				client.send("#unblock " + BmessageList.getSelectedItem());
 				client.send("#break");
@@ -372,8 +375,18 @@ class blockingPopup extends Dialog{
 				client.send("#break");
 				client.send("#valid");
 				client.send("#line");
-				
-				
+			}
+			else{
+				client.send("#break");
+				client.send("#unblock");
+				client.send("#break");
+				client.send("#who");
+				client.send("#whoiblock");
+				client.send("#break");
+				client.send("#users");
+				client.send("#break");
+				client.send("#valid");
+				client.send("#line");
 			}
 		}
 	});
