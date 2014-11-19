@@ -534,7 +534,7 @@ class ChannelPopup extends Dialog{
 	public ChannelPopup(Frame parent){
 		super(parent, true);
 		
-		panel.setLayout(new GridLayout(7,3));
+		panel.setLayout(new GridLayout(6,3));
 		panel.add(createL);
 		panel.add(createTF);
 		panel.add(createB);
@@ -550,11 +550,8 @@ class ChannelPopup extends Dialog{
 		panel.add(leaveL);
 		panel.add(leaveTF);
 		panel.add(leaveB);
-		panel.add(listL);
-		panel.add(listTF);
 		panel.add(listB);
 		panel.add(blank2);
-		panel.add(blank3);
 		panel.add(exit);
 		
 		add("Center", panel);
