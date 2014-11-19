@@ -423,6 +423,8 @@ public void display(String message) {
 
 
 	}else{
+		messageList.add(message);
+		messageList.makeVisible(messageList.getItemCount()-1);
 
 		BmessageList.add(message);
 		BmessageList.makeVisible(BmessageList.getItemCount()-1);
