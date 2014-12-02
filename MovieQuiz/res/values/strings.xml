@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Movie Quiz</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="welcome">Welcome to Movie Quiz!</string>
+    <string name="begin">Press &quot;Start&quot; to begin</string>
+    <string name="start">Start</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="answer">Answer</string>
+    <string name="finish">Finish</string>
+
+</resources>
