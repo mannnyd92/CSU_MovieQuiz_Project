@@ -1,8 +1,10 @@
 package com.example.moviequiz;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 
 public class Quiz extends Activity {
 
@@ -25,6 +27,23 @@ public class Quiz extends Activity {
 	protected void getQuestions(){
 		
 		
+	}
+	
+	public void next(View view){
+		
+	}
+	
+	public void back(View view){
+		
+	}
+	
+	public void answer(View view){
+		
+	}
+	
+	public void finish(View view){
+		Intent intent = new Intent(this, FinalResult.class);
+		startActivity(intent);
 	}
 
 }
