@@ -11,5 +11,7 @@
     <string name="back">Back</string>
     <string name="answer">Answer</string>
     <string name="finish">Finish</string>
+    <string name="title_activity_quiz">Quiz</string>
+    <string name="title_activity_final_result">FinalResult</string>
 
 </resources>
