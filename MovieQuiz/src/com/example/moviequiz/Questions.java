@@ -1,5 +1,7 @@
 package com.example.moviequiz;
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,13 +17,22 @@ public class Questions {
 	 String opt3;
 	 String opt4;
 	 String correct;
+	 boolean answeredBool = false;
+	 String selected;
 	 ArrayList<String> questions = new ArrayList <String>();
 	 Map <Integer, String> map = new HashMap();
 	 ArrayList<Integer> random = new ArrayList <Integer>();
 	 Questions que1;
 	 Questions que2;
 	 Questions que3;
-	
+	 Questions que4;
+	 Questions que5;
+	 Questions que6;
+	 Questions que7;
+	 Questions que8;
+	 Questions que9;
+	 Questions que10;
+	 
 	public Questions(){
 		
 	}
@@ -33,7 +44,26 @@ public class Questions {
 		this.opt4 = opt4;
 		this.correct = correct;
 	}
-
+////setters and getters///////////////////////////////////////////////////////////////////////////////////////////////
+	public String getCorrect(){
+		return correct;
+	}
+	public void setCorrect(String s){
+		correct = s;
+	}
+	public boolean getAnswered(){
+		return answeredBool;
+	}
+	public void setAnswered(boolean set){
+		answeredBool = set;
+	}
+	public String getSelected(){
+		return selected;
+	}
+	public void setSelected(String x){
+		selected = x;
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void readQuestions(String file){
 		File input = new File(file);
 	
@@ -67,20 +97,10 @@ public class Questions {
 					opt4 = opt4.substring(1);
 					correct = opt4;
 				}
-//				System.out.println("Que= " + que);
-//				System.out.println("opt1= " + opt1 + " opt2= " + opt2 + " opt3= " + opt3 + " opt4= " + opt4);
-//				
-				//Questions quest = new Questions(que, opt1, opt2, opt3, opt4, correct);
-				
-				//System.out.println("quest= " + quest);
+
 				
 				map.put(count, que + "|" + opt1 + "|" + opt2 + "|" + opt3 + "|" + opt4 + "|" + correct);
-//				questions.add(opt1);
-//				questions.add(opt2);
-//				questions.add(opt3);
-//				questions.add(opt4);
-//				
-				//map.put(count, questions);
+
 				count++;
 				
 				
@@ -218,10 +238,7 @@ public class Questions {
 		q.readQuestions("P4Trivia");
 		q.getRandom();
 		q.makeQuestions();
-//		for(int i=0; i < questions.size(); i++ ){
-//			System.out.println(questions.get(i));
-//		}
-		//Questions Q1 = new Questions();
+
 		
 	}
 

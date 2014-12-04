@@ -11,7 +11,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);	
 	}
 
 	@Override
@@ -21,8 +21,10 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
+
 	public void beginQuiz(View view){
 		Intent intent = new Intent(this, Quiz.class);
 		startActivity(intent);
 	}
+
 }
