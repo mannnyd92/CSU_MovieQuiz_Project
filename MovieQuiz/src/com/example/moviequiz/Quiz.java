@@ -71,11 +71,18 @@ public class Quiz extends Activity {
 	}
 	
 	public void next(View view){
-		
+		if(position == 9){
+			position = 0;
+		}
+		else{position++;}
+		display(position);
 	}
 	
 	public void back(View view){
-		
+		if(position == 0){
+			position = 9;
+		}else{position--;}
+		display(position);
 	}
 	
 	public void answer(View view){
@@ -104,6 +111,9 @@ public class Quiz extends Activity {
 	}
 	
 	public void finish(View view){
+//		String tally
+//		Bundle bundle = new Bundle();
+//		bundle.putString("data", )
 		Intent intent = new Intent(this, FinalResult.class);
 		startActivity(intent);
 	}

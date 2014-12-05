@@ -13,32 +13,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_centerVertical="true">
 
         <RadioButton
             android:id="@+id/radio0"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="RadioButton" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:layout_height="wrap_content"/>
 
         <RadioButton
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:layout_height="wrap_content"/>
         
         <RadioButton
             android:id="@+id/radio3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:layout_height="wrap_content"/>
         
     </RadioGroup>
 
@@ -52,44 +47,44 @@
         android:text="TextView" />
 
     <Button
-        android:id="@+id/button4"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button3"
-        android:layout_alignTop="@+id/button2"
-        android:text="@string/finish"
-        android:onClick="finish" />
-
-    <Button
         android:id="@+id/button2"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/button1"
-        android:layout_marginBottom="18dp"
-        android:text="@string/answer"
-        android:onClick="answer" />
+        android:layout_toLeftOf="@+id/button4"
+        android:onClick="answer"
+        android:text="@string/answer" />
 
     <Button
         android:id="@+id/button1"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
-        android:layout_toLeftOf="@+id/textView1"
-        android:text="@string/back"
-        android:onClick="back" />
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/button2"
+        android:onClick="back"
+        android:text="@string/back" />
 
     <Button
         android:id="@+id/button3"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button4"
-        android:layout_toRightOf="@+id/textView1"
-        android:text="@string/next"
-        android:onClick="next" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:onClick="next"
+        android:text="@string/next" />
+
+    <Button
+        android:id="@+id/button4"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/button3"
+        android:onClick="finish"
+        android:text="@string/finish" />
 
 </RelativeLayout>
