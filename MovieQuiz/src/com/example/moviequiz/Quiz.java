@@ -79,6 +79,27 @@ public class Quiz extends Activity {
 	}
 	
 	public void answer(View view){
+		RadioButton button1 = (RadioButton) findViewById(R.id.radio0);
+		RadioButton button2 = (RadioButton) findViewById(R.id.radio1);
+		RadioButton button3 = (RadioButton) findViewById(R.id.radio2);
+		RadioButton button4 = (RadioButton) findViewById(R.id.radio3);
+		
+		if(button1.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt1);
+		}
+		if (button2.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt2);
+		}
+		if (button3.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt3);
+		}
+		if (button4.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt4);
+		}
 		
 	}
 	
