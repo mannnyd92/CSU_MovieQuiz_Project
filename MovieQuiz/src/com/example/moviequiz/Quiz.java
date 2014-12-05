@@ -35,6 +35,7 @@ public class Quiz extends Activity {
 	}
 	
 	protected void display(int p){
+		Questions temp = questions.get(p);
 		TextView quest = (TextView) findViewById(R.id.textView1);
 		quest.setText(questions.get(p).que);
 		RadioButton button1 = (RadioButton) findViewById(R.id.radio0);
@@ -45,6 +46,21 @@ public class Quiz extends Activity {
 		button3.setText(questions.get(p).opt3);
 		RadioButton button4 = (RadioButton) findViewById(R.id.radio3);
 		button4.setText(questions.get(p).opt4);
+		
+		if(temp.answeredBool == true){
+			if(temp.selected.equals(temp.opt1)){
+				button1.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt2)){
+				button1.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt3)){
+				button1.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt4)){
+				button1.setChecked(true);
+			}
+		}
 	}
 	
 	protected void getQuestions(){

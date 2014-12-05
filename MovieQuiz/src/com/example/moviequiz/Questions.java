@@ -21,7 +21,7 @@ public class Questions {
 	 String opt4;
 	 String correct;
 	 boolean answeredBool = false;
-	 String selected;
+	 String selected = "";
 	 ArrayList<String> questions = new ArrayList <String>();
 	 Map <Integer, String> map = new HashMap();
 	 ArrayList<Integer> random = new ArrayList <Integer>();
