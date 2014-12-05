@@ -11,10 +11,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class Quiz extends Activity {
 
+	TextView quest;
+	RadioButton button1;
+	RadioButton button2;
+	RadioButton button3;
+	RadioButton button4;
+	RadioGroup radiogroup;
 
 	ArrayList<Questions> questions = new ArrayList<Questions>();
 	int position = 0;
@@ -35,16 +42,31 @@ public class Quiz extends Activity {
 	}
 	
 	protected void display(int p){
-		TextView quest = (TextView) findViewById(R.id.textView1);
-		quest.setText((position +1) + ". " + questions.get(p).que);
-		RadioButton button1 = (RadioButton) findViewById(R.id.radio0);
+	
+		quest.setText((position +1) + ". " + questions.get(p).que);		
+		Questions temp = questions.get(p);
+		quest.setText(questions.get(p).que);
 		button1.setText(questions.get(p).opt1);
-		RadioButton button2 = (RadioButton) findViewById(R.id.radio1);
 		button2.setText(questions.get(p).opt2);
-		RadioButton button3 = (RadioButton) findViewById(R.id.radio2);
 		button3.setText(questions.get(p).opt3);
-		RadioButton button4 = (RadioButton) findViewById(R.id.radio3);
 		button4.setText(questions.get(p).opt4);
+		
+		radiogroup.clearCheck();
+		
+		if(temp.answeredBool == true){
+			if(temp.selected.equals(temp.opt1)){
+				button1.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt2)){
+				button2.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt3)){
+				button3.setChecked(true);
+			}
+			if(temp.selected.equals(temp.opt4)){
+				button4.setChecked(true);
+			}
+		}
 	}
 	
 	protected void getQuestions(){
@@ -67,6 +89,14 @@ public class Quiz extends Activity {
 		questions.add(q.que8);
 		questions.add(q.que9);
 		questions.add(q.que10);
+		
+		quest = (TextView) findViewById(R.id.textView1);
+		button1 = (RadioButton) findViewById(R.id.radio0);
+		button2 = (RadioButton) findViewById(R.id.radio1);
+		button3 = (RadioButton) findViewById(R.id.radio2);
+		button4 = (RadioButton) findViewById(R.id.radio3);
+		radiogroup = (RadioGroup) findViewById(R.id.radioGroup1);
+		
 		display(position);
 	}
 	
@@ -86,6 +116,23 @@ public class Quiz extends Activity {
 	}
 	
 	public void answer(View view){
+		
+		if(button1.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt1);
+		}
+		if (button2.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt2);
+		}
+		if (button3.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt3);
+		}
+		if (button4.isChecked()){
+			questions.get(position).setAnswered(true);
+			questions.get(position).setSelected(questions.get(position).opt4);
+		}
 		
 	}
 	
