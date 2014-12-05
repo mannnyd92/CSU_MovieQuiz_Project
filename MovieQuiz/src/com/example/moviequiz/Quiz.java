@@ -36,7 +36,7 @@ public class Quiz extends Activity {
 	
 	protected void display(int p){
 		TextView quest = (TextView) findViewById(R.id.textView1);
-		quest.setText(questions.get(p).que);
+		quest.setText((position +1) + ". " + questions.get(p).que);
 		RadioButton button1 = (RadioButton) findViewById(R.id.radio0);
 		button1.setText(questions.get(p).opt1);
 		RadioButton button2 = (RadioButton) findViewById(R.id.radio1);
@@ -90,10 +90,22 @@ public class Quiz extends Activity {
 	}
 	
 	public void finish(View view){
-//		String tally
-//		Bundle bundle = new Bundle();
-//		bundle.putString("data", )
+		int answered = 0;
+		int score = 0;
+		for(int i = 0; i<10; i++){
+			if(questions.get(i).answeredBool){
+				answered++;
+			}
+			if(questions.get(i).selected == questions.get(i).correct){
+				score++;
+			}
+		}
+		
 		Intent intent = new Intent(this, FinalResult.class);
+		Bundle bundle = new Bundle();
+		bundle.putInt("answered", answered );
+		bundle.putInt("score", score);
+		intent.putExtras(bundle);
 		startActivity(intent);
 	}
 
