@@ -42,10 +42,9 @@ public class Quiz extends Activity {
 	}
 	
 	protected void display(int p){
-	
-		quest.setText((position +1) + ". " + questions.get(p).que);		
+		
 		Questions temp = questions.get(p);
-		quest.setText(questions.get(p).que);
+		quest.setText((p+1) + ". " + questions.get(p).que);	
 		button1.setText(questions.get(p).opt1);
 		button2.setText(questions.get(p).opt2);
 		button3.setText(questions.get(p).opt3);
@@ -79,7 +78,6 @@ public class Quiz extends Activity {
 		q.makeQuestions();
 
 		questions.add(q.que1);
-		questions.add(q.que2);
 		questions.add(q.que2);
 		questions.add(q.que3);
 		questions.add(q.que4);
@@ -140,10 +138,10 @@ public class Quiz extends Activity {
 		int answered = 0;
 		int score = 0;
 		for(int i = 0; i<10; i++){
-			if(questions.get(i).answeredBool){
+			if(questions.get(i).answeredBool == true){
 				answered++;
 			}
-			if(questions.get(i).selected == questions.get(i).correct){
+			if(questions.get(i).selected.equals(questions.get(i).correct)){
 				score++;
 			}
 		}
