@@ -42,7 +42,7 @@ public class Quiz extends Activity {
 	}
 	
 	protected void display(int p){
-		
+		TextView tv = (TextView) findViewById(R.id.textView2);
 		Questions temp = questions.get(p);
 		quest.setText((p+1) + ". " + questions.get(p).que);	
 		button1.setText(questions.get(p).opt1);
@@ -66,6 +66,20 @@ public class Quiz extends Activity {
 				button4.setChecked(true);
 			}
 		}
+		
+		if(temp.answeredBool == true){
+			if(questions.get(position).selected.equals(questions.get(position).correct)){
+				tv.setText(R.string.correct);
+				tv.setTextColor(Color.GREEN);
+			}
+			else{
+				tv.setText(R.string.incorrect);
+				tv.setTextColor(Color.RED);
+			}
+		}else{
+			tv.setText("");
+		}
+		
 	}
 	
 	protected void getQuestions(){
