@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class Quiz extends Activity {
-
 	TextView quest;
 	RadioButton button1;
 	RadioButton button2;
@@ -114,6 +114,7 @@ public class Quiz extends Activity {
 	}
 	
 	public void answer(View view){
+		TextView tv = (TextView) findViewById(R.id.textView2);
 		
 		if(button1.isChecked()){
 			questions.get(position).setAnswered(true);
@@ -130,6 +131,14 @@ public class Quiz extends Activity {
 		if (button4.isChecked()){
 			questions.get(position).setAnswered(true);
 			questions.get(position).setSelected(questions.get(position).opt4);
+		}
+		if(questions.get(position).selected.equals(questions.get(position).correct)){
+			tv.setText(R.string.correct);
+			tv.setTextColor(Color.GREEN);
+		}
+		else{
+			tv.setText(R.string.incorrect);
+			tv.setTextColor(Color.RED);
 		}
 		
 	}
