@@ -121,8 +121,7 @@ public class Questions {
 	public void getRandom(){
 		Random ran = new Random();
 		while(random.size() != 10){
-			//TODO change random number range to fifty once all questions are in.
-			int rando = ran.nextInt(15);
+			int rando = ran.nextInt(50);
 				if(!random.contains(rando)){
 					random.add(rando);
 				}
@@ -231,11 +230,6 @@ public class Questions {
 		correct = single[5];
 		que10 = new Questions(que, opt1, opt2, opt3, opt4, correct);
 		
-	}
-	public String toString(){
-		String out;
-		out = que + "\n" + opt1 + "\n" + opt2 + "\n" + opt3 + "\n" + opt4;
-		return out;
 	}
 
 }
