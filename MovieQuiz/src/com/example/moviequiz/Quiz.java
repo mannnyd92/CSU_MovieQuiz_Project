@@ -100,9 +100,8 @@ public class Quiz extends Activity {
 	
 	public void next(View view){
 		if(position == 9){
-			position = 0;
-		}
-		else{position++;}
+			finish(view);
+		}else{position++;}
 		display(position);
 	}
 	
